@@ -8,17 +8,17 @@ const Sidebar = () => {
   const menuItems = [
     {
       path: '/',
-      label: 'Dashboard',
+      label: '儀錶板',
       icon: LayoutDashboard,
     },
     {
       path: '/exams',
-      label: 'Exam List',
+      label: '考題列表',
       icon: BookOpen,
     },
     {
       path: '/history',
-      label: 'History',
+      label: '歷史紀錄',
       icon: History,
     },
   ];

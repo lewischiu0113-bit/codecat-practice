@@ -72,13 +72,13 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
             <div className="space-y-3">
               <div className="relative">
                 <Code className="absolute left-3 top-3.5 text-gray-400" size={18} />
-                <input
-                  type="text"
+                <textarea
                   value={inputValue}
                   onChange={handleInputChange}
                   disabled={showResult}
                   placeholder="輸入格式代碼..."
-                  className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg font-mono text-sm ${
+                  rows={8}
+                  className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg font-mono text-sm resize-y min-h-[120px] ${
                     isCorrect
                       ? 'border-green-500 bg-green-50'
                       : isWrong
@@ -90,7 +90,7 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
               {showResult && (
                 <div className="text-sm text-gray-600">
                   <span className="font-medium">正確答案：</span>
-                  <code className="ml-2 px-2 py-1 bg-gray-100 rounded font-mono text-primary whitespace-pre-line">
+                  <code className="ml-2 px-2 py-1 bg-gray-100 rounded font-mono text-primary whitespace-pre-line block mt-1">
                     {question.correctAnswer}
                   </code>
                 </div>
