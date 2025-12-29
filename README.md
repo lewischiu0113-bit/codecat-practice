@@ -1,16 +1,57 @@
-# React + Vite
+# Python DateTime Exam Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一個使用 React、Vite 和 Tailwind CSS 建立的 Python DateTime 考試平台。
 
-Currently, two official plugins are available:
+## 環境設置
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. 安裝依賴
 
-## React Compiler
+```bash
+npm install
+# 或
+pnpm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 2. 設置環境變數
 
-## Expanding the ESLint configuration
+複製 `.env.example` 為 `.env` 並填入您的 Supabase 憑證：
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cp .env.example .env
+```
+
+編輯 `.env` 文件，填入您的 Supabase 配置：
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+**重要：** `.env` 文件已加入 `.gitignore`，不會被提交到 Git。
+
+### 3. 初始化資料庫
+
+1. 前往 [Supabase Dashboard](https://supabase.com/dashboard)
+2. 選擇您的專案
+3. 點擊左側選單的 **"SQL Editor"**
+4. 複製 `supabase-init.sql` 檔案的內容
+5. 貼上並執行 SQL 腳本
+
+詳細說明請參考 [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+
+### 4. 啟動開發伺服器
+
+```bash
+npm run dev
+# 或
+pnpm dev
+```
+
+應用程式將在 `http://localhost:5173` 運行。
+
+## 專案結構
+
+- `src/components/` - React 組件
+- `src/data.js` - 資料層（Supabase 操作）
+- `src/lib/supabase.js` - Supabase 客戶端配置
+- `supabase-init.sql` - 資料庫初始化腳本

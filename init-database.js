@@ -3,10 +3,19 @@
 // 注意：您需要在 Supabase Dashboard 的 SQL Editor 中執行 supabase-init.sql
 
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'fs';
+import { config } from 'dotenv';
 
-const supabaseUrl = 'https://tumnkqggbyvjzwrffuao.supabase.co';
-const supabaseAnonKey = 'sb_publishable_tGgKUMW-rZe7U1zZUflBxQ_O0eQ9fXu';
+// 載入環境變數
+config();
+
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('❌ 錯誤：缺少 Supabase 環境變數！');
+  console.error('請確認 .env 檔案中包含 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY');
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
