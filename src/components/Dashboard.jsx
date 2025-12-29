@@ -67,7 +67,7 @@ const Dashboard = () => {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">儀表板</h1>
-        <p className="text-gray-600">歡迎來到 Python DateTime 考試平台</p>
+        <p className="text-gray-600">歡迎來到 CodeCat Practice - Python 程式練習平台</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -93,7 +93,7 @@ const Dashboard = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">快速開始</h2>
         <p className="text-gray-600 mb-4">
-          選擇一個考試開始練習 Python datetime 格式化。每個考試都包含多種題型，幫助您掌握不同的格式化技巧。
+          選擇一個考試開始練習 Python 程式設計。每個考試都包含多種題型，幫助您掌握不同的 Python 技巧。
         </p>
         <Link
           to="/exams"

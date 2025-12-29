@@ -27,8 +27,8 @@ const Sidebar = () => {
     <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-8">
-          Python DateTime
-          <span className="text-primary"> Exam</span>
+          CodeCat
+          <span className="text-primary"> Practice</span>
         </h1>
         <nav className="space-y-2">
           {menuItems.map((item) => {

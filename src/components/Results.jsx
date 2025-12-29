@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trophy, Loader2 } from "lucide-react";
-import { getExamById, saveExamRecord } from "../data";
+import { getExamById, saveExamRecord, checkAnswer, calculateScore } from "../data";
 import QuestionCard from "./QuestionCard";
 
 const Results = () => {
@@ -12,11 +12,13 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const hasSavedRef = useRef(false); // 使用 ref 追蹤是否已保存，避免重複保存
 
-  const { answers, score } = location.state || {};
+  const { answers: stateAnswers, score: stateScore } = location.state || {};
+  const [answers, setAnswers] = useState(stateAnswers);
+  const [score, setScore] = useState(stateScore);
 
   useEffect(() => {
     const fetchExamAndSave = async () => {
-      if (!answers || !score) {
+      if (!answers || !stateScore) {
         navigate("/exams");
         return;
       }
@@ -27,16 +29,21 @@ const Results = () => {
         return;
       }
       setExam(examData);
+      
+      // 重新計算分數，確保使用最新的驗證邏輯（與顯示詳解使用相同邏輯）
+      const recalculatedScore = calculateScore(examData, answers);
+      setScore(recalculatedScore);
+      
       setLoading(false);
 
       // 只在尚未保存時才保存記錄（防止 React StrictMode 重複執行）
       if (!hasSavedRef.current) {
         hasSavedRef.current = true;
-        await saveExamRecord(id, score, answers);
+        await saveExamRecord(id, recalculatedScore, answers);
       }
     };
     fetchExamAndSave();
-  }, [id, answers, score, navigate]);
+  }, [id, answers, stateScore, navigate]);
 
   if (loading) {
     return (
@@ -109,15 +116,15 @@ const Results = () => {
         <div className="space-y-4">
           {exam.questions.map((question, index) => {
             const userAnswer = answers[index];
-            // Normalize answers for comparison (same logic as in data.js)
-            const normalize = (str) => {
-              if (!str) return '';
-              return str.replace(/\s+/g, '').toLowerCase();
-            };
-            const isCorrect =
-              question.type === "MCQ"
-                ? userAnswer === question.correctAnswer
-                : normalize(userAnswer) === normalize(question.correctAnswer);
+            // 使用統一的驗證函數，確保與計算分數的邏輯完全一致
+            const isCorrect = checkAnswer(question, userAnswer, true);
+            
+            console.log(`[詳解顯示] 題目 ${index + 1} (ID: ${question.id}):`, {
+              類型: question.type,
+              用戶答案: userAnswer,
+              正確答案: question.correctAnswer,
+              是否正確: isCorrect
+            });
 
             return (
               <QuestionCard
@@ -127,6 +134,7 @@ const Results = () => {
                 userAnswer={userAnswer}
                 onAnswerChange={() => {}}
                 showResult={true}
+                isCorrect={isCorrect}
               />
             );
           })}

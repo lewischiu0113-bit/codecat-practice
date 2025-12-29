@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Code } from 'lucide-react';
 
-const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult = false }) => {
+const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult = false, isCorrect: externalIsCorrect = null }) => {
   const [inputValue, setInputValue] = useState(userAnswer || '');
 
   const handleInputChange = (e) => {
@@ -14,8 +14,9 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
     onAnswerChange(index, option);
   };
 
-  const isCorrect = showResult && userAnswer === question.correctAnswer;
-  const isWrong = showResult && userAnswer !== question.correctAnswer;
+  // 如果外部傳入了 isCorrect，使用外部的判斷；否則使用簡單比較（用於考試界面）
+  const isCorrect = showResult ? (externalIsCorrect !== null ? externalIsCorrect : userAnswer === question.correctAnswer) : false;
+  const isWrong = showResult && !isCorrect;
 
   return (
     <div

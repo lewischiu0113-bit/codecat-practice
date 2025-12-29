@@ -1,6 +1,77 @@
 // Supabase Database for Python DateTime Exam Platform
 import { supabase } from './lib/supabase';
 
+// 統一的答案驗證函數（確保計算分數和顯示結果使用相同邏輯）
+export const checkAnswer = (question, userAnswer, debug = false) => {
+  if (question.type === 'MCQ') {
+    const result = userAnswer === question.correctAnswer;
+    if (debug) {
+      console.log(`[MCQ] 題目 ${question.id}:`, {
+        userAnswer,
+        correctAnswer: question.correctAnswer,
+        result
+      });
+    }
+    return result;
+  } else if (question.type === 'Input') {
+    if (!userAnswer) {
+      if (debug) {
+        console.log(`[Input] 題目 ${question.id}: 用戶答案為空`);
+      }
+      return false;
+    }
+    
+    // 兩層驗證：先標準比對，失敗後再移除所有空格比對（大小寫必須一致）
+    const normalizeBasic = (str) => {
+      if (!str) return '';
+      return str.trim();
+    };
+    
+    const normalizeAllSpaces = (str) => {
+      if (!str) return '';
+      return str.replace(/\s+/g, '');
+    };
+    
+    // 第一層：標準比對（只移除首尾空格，保留大小寫）
+    const userBasic = normalizeBasic(userAnswer);
+    const correctBasic = normalizeBasic(question.correctAnswer);
+    
+    if (userBasic === correctBasic) {
+      if (debug) {
+        console.log(`[Input] 題目 ${question.id}: 第一層驗證通過`, {
+          userAnswer,
+          correctAnswer: question.correctAnswer,
+          userBasic,
+          correctBasic
+        });
+      }
+      return true;
+    }
+    
+    // 第二層：移除所有空格後比對（保留大小寫）
+    const userNoSpaces = normalizeAllSpaces(userAnswer);
+    const correctNoSpaces = normalizeAllSpaces(question.correctAnswer);
+    const result = userNoSpaces === correctNoSpaces;
+    
+    if (debug) {
+      console.log(`[Input] 題目 ${question.id}: 驗證結果`, {
+        userAnswer,
+        correctAnswer: question.correctAnswer,
+        userBasic,
+        correctBasic,
+        firstLayerMatch: userBasic === correctBasic,
+        userNoSpaces,
+        correctNoSpaces,
+        secondLayerMatch: result,
+        finalResult: result
+      });
+    }
+    
+    return result;
+  }
+  return false;
+};
+
 // 獲取所有考試
 export const getExams = async () => {
   try {
@@ -90,31 +161,41 @@ export const getExamById = async (id) => {
 // 計算分數
 export const calculateScore = (exam, answers) => {
   let correct = 0;
+  console.log('=== 開始計算分數 ===');
+  console.log('考試:', exam.title);
+  console.log('總題數:', exam.questions.length);
+  console.log('用戶答案:', answers);
+  
   exam.questions.forEach((question, index) => {
     const userAnswer = answers[index];
-    if (question.type === 'MCQ') {
-      if (userAnswer === question.correctAnswer) {
-        correct++;
-      }
-    } else if (question.type === 'Input') {
-      // Normalize answers for comparison
-      // Remove all whitespace (spaces, newlines, tabs) and convert to lowercase
-      const normalize = (str) => {
-        if (!str) return '';
-        return str.replace(/\s+/g, '').toLowerCase();
-      };
-      const normalizedUser = normalize(userAnswer);
-      const normalizedCorrect = normalize(question.correctAnswer);
-      if (normalizedUser === normalizedCorrect) {
-        correct++;
-      }
+    const isCorrect = checkAnswer(question, userAnswer, true);
+    
+    if (isCorrect) {
+      correct++;
     }
+    
+    console.log(`題目 ${index + 1} (ID: ${question.id}):`, {
+      類型: question.type,
+      用戶答案: userAnswer,
+      正確答案: question.correctAnswer,
+      是否正確: isCorrect,
+      目前得分: `${correct}/${index + 1}`
+    });
   });
-  return {
+  
+  const result = {
     correct,
     total: exam.questions.length,
     percentage: Math.round((correct / exam.questions.length) * 100),
   };
+  
+  console.log('=== 分數計算完成 ===');
+  console.log('最終得分:', result);
+  console.log('正確題數:', result.correct);
+  console.log('總題數:', result.total);
+  console.log('正確率:', result.percentage + '%');
+  
+  return result;
 };
 
 // 儲存考試記錄
