@@ -52,18 +52,18 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 
 -- 插入問題資料 - 考試 2
 INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nstartTime = datetime.date(2018, 1, 15)\nendTime = datetime.date(2018, 1, 20)\n\n請填入計算兩個日期之間秒數的關鍵方法：\n(endTime - startTime)._______', NULL, 'total_seconds()', '使用 timedelta 的 total_seconds() 方法計算兩個日期之間的總秒數', 1),
-(2, 'Input', E'您有以下代碼：\nimport datetime as dt\n\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ntoday = dt.datetime.now()\n\n請填入獲取星期幾索引的方法（返回 0-6）：\ntoday._______', NULL, 'weekday()', 'weekday() 方法返回 0（週一）到 6（週日）的整數，可用來索引 days 列表', 2),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nstart = datetime.datetime(2025, 1, 1, 10, 30, 0)\nend = datetime.datetime(2025, 1, 1, 14, 45, 30)\n\n請填入計算時間差的關鍵方法：\n(end - start)._______', NULL, 'total_seconds()', '兩個 datetime 對象相減得到 timedelta 對象，使用 total_seconds() 方法獲取總秒數', 3),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\ndate1 = datetime.date(2025, 3, 15)\ndate2 = datetime.date(2025, 3, 25)\n\n請填入獲取天數差的屬性：\n(date2 - date1)._______', NULL, 'days', '兩個 date 對象相減得到 timedelta 對象，使用 .days 屬性獲取天數差', 4),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nnow = datetime.datetime.now()\n\n請填入獲取年份的屬性：\nnow._______', NULL, 'year', 'datetime 對象有 year 屬性可以直接獲取年份', 5),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nnow = datetime.datetime.now()\n\n請填入獲取月份的屬性：\nnow._______', NULL, 'month', 'datetime 對象有 month 屬性可以直接獲取月份（1-12）', 6),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nnow = datetime.datetime.now()\n\n請填入獲取星期幾的方法（返回 0-6）：\nnow._______', NULL, 'weekday()', 'datetime 對象的 weekday() 方法返回 0（週一）到 6（週日）的整數', 7),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nstart = datetime.datetime(2025, 1, 1)\n\n請填入計算 7 天後的代碼：\nstart + datetime.timedelta(_______)', NULL, 'days=7', '使用 timedelta(days=7) 來進行日期時間的加減運算', 8),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nnow = datetime.datetime.now()\n\n請填入獲取小時數的屬性：\nnow._______', NULL, 'hour', 'datetime 對象有 hour 屬性可以直接獲取小時數（0-23）', 9),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nbirthday = datetime.date(1990, 5, 15)\ntoday = datetime.date.today()\n\n請填入獲取天數差的屬性：\n(today - birthday)._______', NULL, 'days', '兩個 date 對象相減得到 timedelta，使用 .days 屬性獲取天數', 10),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\nstart = datetime.datetime(2025, 1, 1, 9, 0, 0)\n\n請填入計算 2 小時 30 分鐘後的代碼：\nstart + datetime.timedelta(_______)', NULL, 'hours=2, minutes=30', '使用 timedelta 可以同時指定 hours 和 minutes 參數來進行時間計算', 11),
-(2, 'Input', E'您有以下代碼：\nimport datetime\n\ndate_str = "2025-12-25"\n\n請填入將字符串轉換為 date 對象的方法：\ndatetime.datetime.strptime(date_str, _______)', NULL, '"%Y-%m-%d"', '使用 strptime() 方法將字符串解析為 datetime 對象，格式字符串 "%Y-%m-%d" 對應 "2025-12-25"', 12);
+(2, 'Input', E'請完成以下代碼，讓輸出結果為 "2025-12-25"：\n\nimport _______\n\nnow = datetime.datetime(2025, 12, 25)\nprint(now.strftime(_______))\n\n請依序填入：\n1. 模組名稱（用於處理日期時間）\n2. strftime() 的格式字符串（使用百分比符號和特定字母來表示年月日）', NULL, E'datetime\n"%Y-%m-%d"', '需要 import datetime，然後使用 strftime("%Y-%m-%d") 來格式化日期為 "2025-12-25" 格式', 1),
+(2, 'Input', E'請完成以下代碼，讓輸出結果為 "2025年12月25日 14:30:00"：\n\nimport _______\n\nnow = datetime.datetime(2025, 12, 25, 14, 30, 0)\nprint(now.strftime(_______))\n\n請依序填入：\n1. 模組名稱\n2. strftime() 的格式字符串（使用百分比符號，包含年月日時分秒）', NULL, E'datetime\n"%Y年%m月%d日 %H:%M:%S"', '需要 import datetime，然後使用 strftime("%Y年%m月%d日 %H:%M:%S") 來格式化日期時間', 2),
+(2, 'Input', E'請完成以下代碼，建立一個日期對象表示 2018年1月15日：\n\nimport _______\n\nmy_date = datetime.date(_______)\nprint(my_date)  # 輸出：2018-01-15\n\n請依序填入：\n1. 模組名稱\n2. date() 構造函數的參數（年, 月, 日，用逗號分隔）', NULL, E'datetime\n2018, 1, 15', '需要 import datetime，然後使用 datetime.date(2018, 1, 15) 來建立日期對象', 3),
+(2, 'Input', E'請完成以下代碼，建立一個日期時間對象表示 2025年1月1日 10點30分0秒：\n\nimport _______\n\nmy_datetime = datetime.datetime(_______)\nprint(my_datetime)  # 輸出：2025-01-01 10:30:00\n\n請依序填入：\n1. 模組名稱\n2. datetime() 構造函數的參數（年, 月, 日, 時, 分, 秒，用逗號分隔）', NULL, E'datetime\n2025, 1, 1, 10, 30, 0', '需要 import datetime，然後使用 datetime.datetime(2025, 1, 1, 10, 30, 0) 來建立日期時間對象', 4),
+(2, 'Input', E'請完成以下代碼，讓輸出結果為 "今天是 2025/12/25"：\n\nimport _______\n\nnow = datetime.datetime(2025, 12, 25)\nprint(f"今天是 {now.strftime(_______)}")\n\n請依序填入：\n1. 模組名稱\n2. strftime() 的格式字符串（使用百分比符號，用斜線分隔年月日）', NULL, E'datetime\n"%Y/%m/%d"', '需要 import datetime，然後使用 strftime("%Y/%m/%d") 來格式化日期為 "2025/12/25" 格式', 5),
+(2, 'Input', E'請完成以下代碼，建立一個日期對象表示 1990年5月15日：\n\nimport _______\n\nbirthday = datetime.date(_______)\nprint(birthday)  # 輸出：1990-05-15\n\n請依序填入：\n1. 模組名稱\n2. date() 構造函數的參數（年, 月, 日）', NULL, E'datetime\n1990, 5, 15', '需要 import datetime，然後使用 datetime.date(1990, 5, 15) 來建立日期對象', 6),
+(2, 'Input', E'請完成以下代碼，讓輸出結果為 "14:30:00"（只顯示時間）：\n\nimport _______\n\nnow = datetime.datetime(2025, 12, 25, 14, 30, 0)\nprint(now.strftime(_______))\n\n請依序填入：\n1. 模組名稱\n2. strftime() 的格式字符串（使用百分比符號，只包含時分秒）', NULL, E'datetime\n"%H:%M:%S"', '需要 import datetime，然後使用 strftime("%H:%M:%S") 來格式化時間為 "14:30:00" 格式', 7),
+(2, 'Input', E'請完成以下代碼，建立一個日期時間對象表示 2025年3月15日 9點0分0秒：\n\nimport _______\n\nmy_datetime = datetime.datetime(_______)\nprint(my_datetime)  # 輸出：2025-03-15 09:00:00\n\n請依序填入：\n1. 模組名稱\n2. datetime() 構造函數的參數（年, 月, 日, 時, 分, 秒）', NULL, E'datetime\n2025, 3, 15, 9, 0, 0', '需要 import datetime，然後使用 datetime.datetime(2025, 3, 15, 9, 0, 0) 來建立日期時間對象', 8),
+(2, 'Input', E'請完成以下代碼，讓輸出結果為 "2025年12月"（只顯示年月）：\n\nimport _______\n\nnow = datetime.datetime(2025, 12, 25)\nprint(now.strftime(_______))\n\n請依序填入：\n1. 模組名稱\n2. strftime() 的格式字符串（使用百分比符號，只包含年月）', NULL, E'datetime\n"%Y年%m月"', '需要 import datetime，然後使用 strftime("%Y年%m月") 來格式化日期為 "2025年12月" 格式', 9),
+(2, 'Input', E'請完成以下代碼，建立一個日期對象表示 2025年3月25日：\n\nimport _______\n\ndate2 = datetime.date(_______)\nprint(date2)  # 輸出：2025-03-25\n\n請依序填入：\n1. 模組名稱\n2. date() 構造函數的參數（年, 月, 日）', NULL, E'datetime\n2025, 3, 25', '需要 import datetime，然後使用 datetime.date(2025, 3, 25) 來建立日期對象', 10),
+(2, 'Input', E'請完成以下代碼，讓輸出結果為 "12/25/2025"（美式日期格式）：\n\nimport _______\n\nnow = datetime.datetime(2025, 12, 25)\nprint(now.strftime(_______))\n\n請依序填入：\n1. 模組名稱\n2. strftime() 的格式字符串（使用百分比符號，順序為月/日/年）', NULL, E'datetime\n"%m/%d/%Y"', '需要 import datetime，然後使用 strftime("%m/%d/%Y") 來格式化日期為 "12/25/2025" 格式', 11),
+(2, 'Input', E'請完成以下代碼，建立一個日期時間對象表示 2025年1月1日 14點45分30秒：\n\nimport _______\n\nend = datetime.datetime(_______)\nprint(end)  # 輸出：2025-01-01 14:45:30\n\n請依序填入：\n1. 模組名稱\n2. datetime() 構造函數的參數（年, 月, 日, 時, 分, 秒）', NULL, E'datetime\n2025, 1, 1, 14, 45, 30', '需要 import datetime，然後使用 datetime.datetime(2025, 1, 1, 14, 45, 30) 來建立日期時間對象', 12);
 
 -- 插入問題資料 - 考試 3 (Python 格式化輸出)
 INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
@@ -135,4 +135,13 @@ CREATE POLICY "Allow public read access on exam_records" ON exam_records
 
 CREATE POLICY "Allow public insert access on exam_records" ON exam_records
   FOR INSERT WITH CHECK (true);
+
+-- 建立政策：允許所有人刪除考試記錄
+-- 先刪除舊政策（如果存在）
+DROP POLICY IF EXISTS "Allow public delete access on exam_records" ON exam_records;
+
+-- 建立新的刪除政策（DELETE 操作只需要 USING，不需要 WITH CHECK）
+CREATE POLICY "Allow public delete access on exam_records" ON exam_records
+  FOR DELETE 
+  USING (true);
 

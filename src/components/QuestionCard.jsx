@@ -20,18 +20,22 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm border-2 p-6 mb-6 ${
-        isCorrect ? 'border-green-500 bg-green-50' : isWrong ? 'border-red-500 bg-red-50' : 'border-gray-200'
+      className={`bg-white rounded-xl shadow-sm border-2 p-6 mb-6 transition-all duration-300 ${
+        isCorrect 
+          ? 'border-green-500 bg-green-50 animate-scale-in' 
+          : isWrong 
+          ? 'border-red-500 bg-red-50 animate-shake' 
+          : 'border-gray-200 hover:border-primary hover:shadow-md'
       }`}
     >
       <div className="flex items-start gap-3 mb-4">
         <div
-          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
+          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 ${
             isCorrect
-              ? 'bg-green-500 text-white'
+              ? 'bg-green-500 text-white animate-bounce-in'
               : isWrong
-              ? 'bg-red-500 text-white'
-              : 'bg-gray-200 text-gray-700'
+              ? 'bg-red-500 text-white animate-bounce-in'
+              : 'bg-gray-200 text-gray-700 hover:bg-primary hover:text-white hover:scale-110'
           }`}
         >
           {index + 1}
@@ -49,17 +53,17 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
                     key={optIndex}
                     onClick={() => !showResult && handleOptionSelect(option)}
                     disabled={showResult}
-                    className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
+                    className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all duration-300 transform ${
                       isSelected
                         ? isCorrect
-                          ? 'border-green-500 bg-green-100'
+                          ? 'border-green-500 bg-green-100 scale-105 shadow-md'
                           : isWrong
-                          ? 'border-red-500 bg-red-100'
-                          : 'border-primary bg-orange-50'
+                          ? 'border-red-500 bg-red-100 scale-105 shadow-md'
+                          : 'border-primary bg-orange-50 scale-105 shadow-md'
                         : isCorrectOption
                         ? 'border-green-300 bg-green-50'
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                    } ${showResult ? 'cursor-default' : 'cursor-pointer'}`}
+                        : 'border-gray-200 hover:border-primary hover:bg-orange-50 hover:scale-[1.02] hover:shadow-sm'
+                    } ${showResult ? 'cursor-default' : 'cursor-pointer active:scale-95'}`}
                   >
                     <span className="font-medium text-gray-800">{option}</span>
                   </button>
@@ -78,12 +82,12 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
                   disabled={showResult}
                   placeholder="輸入格式代碼..."
                   rows={8}
-                  className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg font-mono text-sm resize-y min-h-[120px] ${
+                  className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg font-mono text-sm resize-y min-h-[120px] transition-all duration-300 ${
                     isCorrect
-                      ? 'border-green-500 bg-green-50'
+                      ? 'border-green-500 bg-green-50 animate-scale-in'
                       : isWrong
-                      ? 'border-red-500 bg-red-50'
-                      : 'border-gray-300 focus:border-primary focus:ring-2 focus:ring-orange-200'
+                      ? 'border-red-500 bg-red-50 animate-shake'
+                      : 'border-gray-300 focus:border-primary focus:ring-2 focus:ring-orange-200 focus:scale-[1.01]'
                   } ${showResult ? 'cursor-default' : ''}`}
                 />
               </div>
@@ -99,11 +103,15 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
           )}
 
           {showResult && (
-            <div className={`mt-4 p-4 rounded-lg ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
-              <p className={`text-sm font-medium ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+            <div className={`mt-4 p-4 rounded-lg animate-slide-in-up transition-all duration-300 ${
+              isCorrect ? 'bg-green-100' : 'bg-red-100'
+            }`}>
+              <p className={`text-sm font-medium animate-fade-in ${
+                isCorrect ? 'text-green-800' : 'text-red-800'
+              }`}>
                 {isCorrect ? '✓ 正確！' : '✗ 錯誤'}
               </p>
-              <p className="text-sm text-gray-700 mt-1">{question.explanation}</p>
+              <p className="text-sm text-gray-700 mt-1 animate-fade-in animate-delay-200">{question.explanation}</p>
             </div>
           )}
         </div>

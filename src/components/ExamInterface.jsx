@@ -62,44 +62,49 @@ const ExamInterface = () => {
   const allAnswered = exam.questions.every((_, index) => answers[index] !== undefined && answers[index] !== '');
 
   return (
-    <div className="p-8">
+    <div className="p-8 animate-fade-in">
       <button
         onClick={() => navigate('/exams')}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-colors"
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left"
       >
-        <ArrowLeft size={20} />
+        <ArrowLeft size={20} className="transition-transform duration-300 hover:-translate-x-1" />
         <span>返回考試列表</span>
       </button>
 
-      <div className="mb-6">
+      <div className="mb-6 animate-slide-in-down">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">{exam.title}</h1>
         <p className="text-gray-600">共 {exam.questions.length} 題</p>
       </div>
 
       <div className="space-y-4">
         {exam.questions.map((question, index) => (
-          <QuestionCard
+          <div
             key={question.id}
-            question={question}
-            index={index}
-            userAnswer={answers[index]}
-            onAnswerChange={handleAnswerChange}
-            showResult={false}
-          />
+            className="animate-slide-in-up"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <QuestionCard
+              question={question}
+              index={index}
+              userAnswer={answers[index]}
+              onAnswerChange={handleAnswerChange}
+              showResult={false}
+            />
+          </div>
         ))}
       </div>
 
-      <div className="mt-8 flex justify-end">
+      <div className="mt-8 flex justify-end animate-slide-in-up animate-delay-500">
         <button
           onClick={handleSubmit}
           disabled={!allAnswered || isSubmitted}
-          className={`px-8 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+          className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 transform ${
             allAnswered && !isSubmitted
-              ? 'bg-primary text-white hover:bg-orange-600'
+              ? 'bg-primary text-white hover:bg-orange-600 hover:scale-110 hover:shadow-lg active:scale-95'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >
-          <CheckCircle size={20} />
+          <CheckCircle size={20} className={allAnswered && !isSubmitted ? 'animate-pulse' : ''} />
           提交答案
         </button>
       </div>

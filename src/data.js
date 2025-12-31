@@ -360,6 +360,128 @@ export const getExamStatistics = async () => {
   }
 };
 
+// 刪除所有考試記錄
+export const deleteAllExamRecords = async () => {
+  console.log('[刪除記錄] 開始執行刪除操作...');
+  
+  try {
+    // 步驟1: 獲取所有記錄的 ID
+    console.log('[刪除記錄] 步驟1: 獲取所有記錄 ID...');
+    const { data: allRecords, error: fetchError } = await supabase
+      .from('exam_records')
+      .select('id');
+
+    if (fetchError) {
+      console.error('[刪除記錄] ❌ 獲取記錄錯誤:', fetchError);
+      console.error('[刪除記錄] 錯誤詳情:', JSON.stringify(fetchError, null, 2));
+      return { success: false, error: fetchError };
+    }
+
+    const recordCount = allRecords ? allRecords.length : 0;
+    console.log('[刪除記錄] ✓ 當前記錄數量:', recordCount);
+    console.log('[刪除記錄] 記錄 ID 列表:', allRecords?.map(r => r.id) || []);
+
+    if (recordCount === 0) {
+      console.log('[刪除記錄] ⚠️ 沒有記錄需要刪除');
+      return { success: true, deletedCount: 0 };
+    }
+
+    // 步驟2: 逐個刪除每個記錄（更可靠的方式）
+    console.log('[刪除記錄] 步驟2: 執行逐個刪除操作...');
+    const ids = allRecords.map(r => r.id);
+    console.log('[刪除記錄] 將刪除的 ID:', ids);
+    
+    let successCount = 0;
+    let failCount = 0;
+    const failedIds = [];
+    
+    for (const record of allRecords) {
+      console.log(`[刪除記錄] 正在刪除 ID ${record.id}...`);
+      
+      const { data: deleteData, error: deleteError } = await supabase
+        .from('exam_records')
+        .delete()
+        .eq('id', record.id)
+        .select(); // 添加 select() 以獲取被刪除的記錄
+      
+      console.log(`[刪除記錄] ID ${record.id} 刪除結果:`);
+      console.log(`[刪除記錄]   - data:`, deleteData);
+      console.log(`[刪除記錄]   - error:`, deleteError);
+      
+      if (deleteError) {
+        console.error(`[刪除記錄] ❌ 刪除 ID ${record.id} 失敗:`, deleteError);
+        console.error(`[刪除記錄]   錯誤詳情:`, JSON.stringify(deleteError, null, 2));
+        failCount++;
+        failedIds.push(record.id);
+      } else {
+        // 檢查是否真的刪除了（data 應該包含被刪除的記錄）
+        if (deleteData && deleteData.length > 0) {
+          console.log(`[刪除記錄] ✓ 刪除 ID ${record.id} 成功，已刪除記錄:`, deleteData);
+          successCount++;
+        } else {
+          console.warn(`[刪除記錄] ⚠️ 刪除 ID ${record.id} 沒有返回數據，可能未成功`);
+          // 驗證這個 ID 是否還存在
+          const { data: verifyData } = await supabase
+            .from('exam_records')
+            .select('id')
+            .eq('id', record.id)
+            .single();
+          
+          if (verifyData) {
+            console.error(`[刪除記錄] ❌ ID ${record.id} 仍然存在於資料庫中！`);
+            failCount++;
+            failedIds.push(record.id);
+          } else {
+            console.log(`[刪除記錄] ✓ ID ${record.id} 已成功刪除（驗證通過）`);
+            successCount++;
+          }
+        }
+      }
+    }
+    
+    console.log(`[刪除記錄] 刪除結果總結: 成功 ${successCount} 個，失敗 ${failCount} 個`);
+    if (failedIds.length > 0) {
+      console.error(`[刪除記錄] 失敗的 ID:`, failedIds);
+    }
+    
+    if (failCount > 0) {
+      return { 
+        success: false, 
+        error: `部分刪除失敗，成功: ${successCount}, 失敗: ${failCount}，失敗的 ID: ${failedIds.join(', ')}` 
+      };
+    }
+
+    // 步驟3: 驗證刪除是否成功
+    console.log('[刪除記錄] 步驟3: 驗證刪除結果...');
+    const { count: afterCount, error: verifyError } = await supabase
+      .from('exam_records')
+      .select('*', { count: 'exact', head: true });
+
+    if (verifyError) {
+      console.error('[刪除記錄] ⚠️ 驗證刪除結果時發生錯誤:', verifyError);
+    } else {
+      console.log('[刪除記錄] ✓ 刪除後記錄數量:', afterCount);
+      if (afterCount > 0) {
+        console.error('[刪除記錄] ❌ 警告：刪除後仍有記錄存在！刪除可能未成功');
+        // 獲取剩餘記錄以便調試
+        const { data: remaining } = await supabase
+          .from('exam_records')
+          .select('id');
+        console.error('[刪除記錄] 剩餘記錄 ID:', remaining?.map(r => r.id) || []);
+      } else {
+        console.log('[刪除記錄] ✓ 刪除成功，所有記錄已清除');
+      }
+    }
+
+    console.log('[刪除記錄] ✓ 操作完成');
+    return { success: true, deletedCount: recordCount };
+  } catch (err) {
+    console.error('[刪除記錄] ❌ 刪除考試記錄異常:', err);
+    console.error('[刪除記錄] 異常詳情:', JSON.stringify(err, null, 2));
+    return { success: false, error: err };
+  }
+};
+
 // 為了向後兼容，導出一個同步版本的 exams（用於需要立即資料的地方）
 // 這將返回一個空陣列，實際資料需要通過 getExams() 異步獲取
 export const exams = [];
