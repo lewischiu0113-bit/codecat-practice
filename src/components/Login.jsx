@@ -44,9 +44,9 @@ const Login = () => {
         <div className="text-center mb-8">
           <div className="inline-block mb-4 animate-fade-in-down">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg animate-bounce-in">
-                <span className="text-2xl font-bold text-white">C</span>
-              </div>
+              {/* <div className="w-40 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg animate-bounce-in">
+                <span className="text-2xl font-bold text-white">Pthon</span>
+              </div> */}
             </div>
           </div>
           <h1
