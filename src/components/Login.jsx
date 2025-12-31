@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { LogIn, User, Lock, Loader2 } from "lucide-react";
 import { loginUser } from "../utils/auth";
+import BlobBackground from "./BlobBackground";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,32 +36,8 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50 to-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* 背景裝飾動畫 - 多個漸入漸出的 blob */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* 第一組 - 左上區域 */}
-        <div className="absolute top-10 left-5 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out"></div>
-        <div className="absolute top-32 left-20 w-80 h-80 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-2 animation-delay-1000"></div>
-
-        {/* 第二組 - 右上區域 */}
-        {/* <div className="absolute top-20 right-10 w-96 h-96 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-2 animation-delay-2000"></div> */}
-        <div className="absolute top-60 right-32 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out animation-delay-3000"></div>
-        <div className="absolute top-5 right-1/4 w-64 h-64 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-3 animation-delay-1500"></div>
-
-        {/* 第三組 - 左下區域 */}
-        <div className="absolute bottom-40 left-1/4 w-80 h-80 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-2 animation-delay-5000"></div>
-        <div className="absolute bottom-10 left-1/3 w-72 h-72 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out animation-delay-6000"></div>
-
-        {/* 第四組 - 右下區域 */}
-        <div className="absolute bottom-32 right-1/3 w-72 h-72 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-3 animation-delay-7000"></div>
-        <div className="absolute bottom-5 right-1/2 w-80 h-80 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out animation-delay-8000"></div>
-
-        {/* 第五組 - 中間區域 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-3 animation-delay-2500"></div>
-        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-2 animation-delay-4500"></div>
-        <div className="absolute top-2/3 right-1/3 w-72 h-72 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out animation-delay-5500"></div>
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-3 animation-delay-3500"></div>
-        <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob-fade-in-out-2 animation-delay-6500"></div>
-      </div>
+      {/* 背景裝飾動畫 - 使用 framer-motion 簡化 */}
+      <BlobBackground />
 
       <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md relative z-10 animate-scale-in border border-orange-100">
         {/* 標題區域 - 漸進出現動畫 */}
