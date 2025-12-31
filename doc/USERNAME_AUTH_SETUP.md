@@ -107,9 +107,11 @@ export const loginUser = async (username, password) => {
 ```
 
 #### Session 管理
-- 使用 `localStorage` 存儲用戶 session
+- 使用 `localStorage` 存儲用戶 session（**不使用 JWT token**）
 - Key: `user_session`
+- 存儲格式：JSON 對象 `{user_id, username, loginTime}`
 - 登出時清除 `localStorage`
+- **注意**：目前沒有 token 過期機制，session 會一直有效直到手動登出或清除瀏覽器數據
 
 ## 資料庫設定
 
@@ -186,7 +188,7 @@ export const loginUser = async (username, password) => {
 | 用戶表 | `auth.users` (UUID) | `user_profile` (INTEGER) |
 | 認證方式 | `supabase.auth.signUp()` | RPC 函數 `register_user()` |
 | 登入方式 | `supabase.auth.signInWithPassword()` | RPC 函數 `verify_user_login()` |
-| Session | JWT token | localStorage |
+| Session | JWT token | localStorage (JSON 格式) |
 | Email 驗證 | 需要（可關閉） | 不需要 |
 | 密碼加密 | Supabase 自動處理 | PostgreSQL bcrypt |
 
