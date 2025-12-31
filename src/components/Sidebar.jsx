@@ -1,9 +1,19 @@
-import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, History } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, BookOpen, History, LogOut } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useAuth } from '../contexts/AuthContext';
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const handleLogout = () => {
+    if (window.confirm('確定要登出嗎？')) {
+      signOut();
+      navigate('/login');
+    }
+  };
 
   const menuItems = [
     {
@@ -24,13 +34,13 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 animate-slide-in-left">
-      <div className="p-6">
+    <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 animate-slide-in-left flex flex-col">
+      <div className="p-6 flex-1 flex flex-col">
         <h1 className="text-2xl font-bold text-gray-800 mb-8 animate-fade-in">
           CodeCat
           <span className="text-primary"> Practice</span>
         </h1>
-        <nav className="space-y-2">
+        <nav className="space-y-2 flex-1">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -58,6 +68,16 @@ const Sidebar = () => {
             );
           })}
         </nav>
+        
+        <div className="pt-6 border-t border-gray-200">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-300 transform hover:scale-105"
+          >
+            <LogOut size={20} />
+            <span>登出</span>
+          </button>
+        </div>
       </div>
     </div>
   );

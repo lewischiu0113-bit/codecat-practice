@@ -1,3 +1,16 @@
+-- ============================================
+-- CodeCat Practice 資料庫初始化腳本
+-- 完整版本：包含所有表、數據、政策和函數
+-- 假設所有表都已刪除，需要重新建立
+-- ============================================
+
+-- 啟用 pgcrypto 擴展（用於密碼加密）
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- ============================================
+-- 1. 建立基本表結構
+-- ============================================
+
 -- 建立 exams 表格
 CREATE TABLE IF NOT EXISTS exams (
   id SERIAL PRIMARY KEY,
@@ -21,9 +34,41 @@ CREATE TABLE IF NOT EXISTS questions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 清除現有資料（可選，如果需要重新初始化）
--- DELETE FROM questions;
--- DELETE FROM exams;
+-- 建立 user_profile 表格（用戶資料表）
+CREATE TABLE IF NOT EXISTS user_profile (
+  id SERIAL PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE, -- 使用者名稱（唯一值）
+  password_hash TEXT NOT NULL, -- 加密後的密碼
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 建立 exam_records 表格（考試記錄）
+CREATE TABLE IF NOT EXISTS exam_records (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES user_profile(id) ON DELETE CASCADE, -- 關聯到 user_profile
+  exam_id INTEGER REFERENCES exams(id) ON DELETE CASCADE,
+  score INTEGER NOT NULL, -- 正確題數
+  total INTEGER NOT NULL, -- 總題數
+  percentage INTEGER NOT NULL, -- 正確率百分比
+  answers JSONB NOT NULL, -- 用戶答案（陣列格式）
+  completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ============================================
+-- 2. 建立索引以提升查詢效能
+-- ============================================
+
+CREATE INDEX IF NOT EXISTS idx_questions_exam_id ON questions(exam_id);
+CREATE INDEX IF NOT EXISTS idx_questions_order ON questions(exam_id, question_order);
+CREATE INDEX IF NOT EXISTS idx_user_profile_username ON user_profile(username);
+CREATE INDEX IF NOT EXISTS idx_exam_records_exam_id ON exam_records(exam_id);
+CREATE INDEX IF NOT EXISTS idx_exam_records_user_id ON exam_records(user_id);
+CREATE INDEX IF NOT EXISTS idx_exam_records_completed_at ON exam_records(completed_at DESC);
+
+-- ============================================
+-- 3. 插入考試和問題數據
+-- ============================================
 
 -- 插入考試資料
 INSERT INTO exams (id, title, difficulty, description) VALUES
@@ -100,48 +145,141 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 (5, 'Input', E'以下是一些打亂的句子，其中有些是錯誤的。請從中選出正確的句子，拼出一個包含三個測試方法的完整單元測試類，類名為 TestMath。\n\n題目要求（請仔細對應每個測試方法的內容）：\n1. 第一個測試方法：方法名必須清楚表示測試「2 + 2 等於 4」，使用 assertEqual 測試 2 + 2 等於 4，這個測試必須成功（通過）\n2. 第二個測試方法：方法名必須清楚表示測試「5 - 3 等於 2」，使用 @unittest.skip 裝飾器跳過這個測試，跳過原因為 "Not implemented yet"，方法內部仍要寫 self.assertEqual(5 - 3, 2) 來測試減法運算\n3. 第三個測試方法：方法名必須清楚表示測試「2 * 3 等於 5」，使用 assertEqual 測試 2 * 3 等於 5，這個測試必須失敗（因為 2*3=6 不等於 5）\n4. 最後要有 if __name__ == ''__main__'': unittest.main() 來執行測試\n\n句子列表（包含許多錯誤選項）：\n1. import unittest\n2. import test\n3. from unittest import TestCase\n4. from unittest import TestCase, skip\n5. class TestMath(unittest.TestCase):\n6. class TestMath(TestCase):\n7. class MathTest(unittest.TestCase):\n8. def test_2_plus_2_equals_4(self):\n9. def test_2_add_2_equals_4(self):\n10. def test_addition(self):\n11. def addition_test(self):\n12. def testAddition(self):\n13. self.assertEqual(2 + 2, 4)\n14. self.assertEqual(2 + 2, 5)\n15. self.assertEqual(2 + 2, 4, "Addition test")\n16. self.assertTrue(2 + 2 == 4)\n17. @unittest.skip\n18. @unittest.skip("Not implemented yet")\n19. @skip("Not implemented yet")\n20. @unittest.skipIf(True, "Not implemented yet")\n21. def test_5_minus_3_equals_2(self):\n22. def test_5_subtract_3_equals_2(self):\n23. def test_subtraction(self):\n24. def subtraction_test(self):\n25. def testSubtraction(self):\n26. self.assertEqual(5 - 3, 2)\n27. self.assertEqual(5 - 3, 3)\n28. self.assertEqual(5 - 3, 2, "Subtraction test")\n29. def test_2_multiply_3_equals_5(self):\n30. def test_2_times_3_equals_5(self):\n31. def test_multiplication(self):\n32. def multiplication_test(self):\n33. def testMultiplication(self):\n34. self.assertEqual(2 * 3, 5)\n35. self.assertEqual(2 * 3, 6)\n36. self.assertNotEqual(2 * 3, 5)\n37. if __name__ == ''__main__'':\n38. if __name__ == "__main__":\n39. unittest.main()\n40. TestMath.main()\n41. main()\n42. unittest.run()\n\n請寫出完整的正確代碼（包含所有三個測試方法）：', NULL, E'import unittest\n\nclass TestMath(unittest.TestCase):\n    def test_2_plus_2_equals_4(self):\n        self.assertEqual(2 + 2, 4)\n    \n    @unittest.skip("Not implemented yet")\n    def test_5_minus_3_equals_2(self):\n        self.assertEqual(5 - 3, 2)\n    \n    def test_2_multiply_3_equals_5(self):\n        self.assertEqual(2 * 3, 5)\n\nif __name__ == ''__main__'':\n    unittest.main()', '正確組合：import unittest、class TestMath(unittest.TestCase)、test_2_plus_2_equals_4 使用 assertEqual(2+2, 4) 會成功、test_5_minus_3_equals_2 使用 @unittest.skip("Not implemented yet") 會跳過但內部仍要寫 assertEqual(5-3, 2)、test_2_multiply_3_equals_5 使用 assertEqual(2*3, 5) 會失敗（因為實際是 6）、最後用 if __name__ == ''__main__'': unittest.main() 執行', 1),
 (5, 'Input', E'以下是一些打亂的句子，其中有些是錯誤的。請從中選出正確的句子，拼出一個包含三個測試方法的完整單元測試類，類名為 TestString。\n\n題目要求（請仔細對應每個測試方法的內容）：\n1. 第一個測試方法：方法名必須清楚表示測試「"hello" 轉大寫等於 "HELLO"」，使用 assertEqual 測試 "hello".upper() 等於 "HELLO"，這個測試必須成功（通過）\n2. 第二個測試方法：方法名必須清楚表示測試「"HELLO" 轉小寫等於 "hello"」，使用 @unittest.skip 裝飾器跳過這個測試，跳過原因為 "Skip this test"，方法內部仍要寫 self.assertEqual("HELLO".lower(), "hello") 來測試小寫轉換\n3. 第三個測試方法：方法名必須清楚表示測試「"Python" 的長度等於 5」，使用 assertEqual 測試 len("Python") 等於 5，這個測試必須失敗（因為 "Python" 的長度是 6 不是 5）\n4. 最後要有 if __name__ == ''__main__'': unittest.main() 來執行測試\n\n句子列表（包含許多錯誤選項）：\n1. import unittest\n2. import test\n3. from unittest import TestCase, skip\n4. from unittest import *\n5. class TestString(unittest.TestCase):\n6. class TestString(TestCase):\n7. class StringTest(unittest.TestCase):\n8. def test_hello_upper_equals_HELLO(self):\n9. def test_hello_to_uppercase_equals_HELLO(self):\n10. def test_upper(self):\n11. def upper_test(self):\n12. def testUpper(self):\n13. self.assertEqual("hello".upper(), "HELLO")\n14. self.assertEqual("hello".upper(), "hello")\n15. self.assertTrue("hello".upper() == "HELLO")\n16. self.assertEqual("HELLO".upper(), "HELLO")\n17. @unittest.skip\n18. @unittest.skip("Skip this test")\n19. @skip("Skip this test")\n20. @unittest.skipIf(False, "Skip this test")\n21. @unittest.expectedFailure\n22. def test_HELLO_lower_equals_hello(self):\n23. def test_HELLO_to_lowercase_equals_hello(self):\n24. def test_lower(self):\n25. def lower_test(self):\n26. def testLower(self):\n27. self.assertEqual("HELLO".lower(), "hello")\n28. self.assertEqual("HELLO".lower(), "HELLO")\n29. self.assertEqual("HELLO".lower(), "hello", "Lower test")\n30. def test_Python_length_equals_5(self):\n31. def test_Python_len_equals_5(self):\n32. def test_length(self):\n33. def length_test(self):\n34. def testLength(self):\n35. self.assertEqual(len("Python"), 5)\n36. self.assertEqual(len("Python"), 6)\n37. self.assertEqual("Python".len(), 5)\n38. self.assertTrue(len("Python") == 5)\n39. if __name__ == ''__main__'':\n40. if __name__ == "__main__":\n41. unittest.main()\n42. TestString.main()\n43. main()\n44. unittest.run()\n45. TestCase.main()\n\n請寫出完整的正確代碼（包含所有三個測試方法）：', NULL, E'import unittest\n\nclass TestString(unittest.TestCase):\n    def test_hello_upper_equals_HELLO(self):\n        self.assertEqual("hello".upper(), "HELLO")\n    \n    @unittest.skip("Skip this test")\n    def test_HELLO_lower_equals_hello(self):\n        self.assertEqual("HELLO".lower(), "hello")\n    \n    def test_Python_length_equals_5(self):\n        self.assertEqual(len("Python"), 5)\n\nif __name__ == ''__main__'':\n    unittest.main()', '正確組合：import unittest、class TestString(unittest.TestCase)、test_hello_upper_equals_HELLO 使用 assertEqual("hello".upper(), "HELLO") 會成功、test_HELLO_lower_equals_hello 使用 @unittest.skip("Skip this test") 會跳過但內部仍要寫 assertEqual("HELLO".lower(), "hello")、test_Python_length_equals_5 使用 assertEqual(len("Python"), 5) 會失敗（因為實際長度是 6）、最後用 if __name__ == ''__main__'': unittest.main() 執行', 2);
 
--- 建立 exam_records 表格（考試記錄）
-CREATE TABLE IF NOT EXISTS exam_records (
-  id SERIAL PRIMARY KEY,
-  exam_id INTEGER REFERENCES exams(id) ON DELETE CASCADE,
-  score INTEGER NOT NULL, -- 正確題數
-  total INTEGER NOT NULL, -- 總題數
-  percentage INTEGER NOT NULL, -- 正確率百分比
-  answers JSONB NOT NULL, -- 用戶答案（陣列格式）
-  completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- ============================================
+-- 4. 啟用 Row Level Security (RLS)
+-- ============================================
 
--- 建立索引以提升查詢效能
-CREATE INDEX IF NOT EXISTS idx_questions_exam_id ON questions(exam_id);
-CREATE INDEX IF NOT EXISTS idx_questions_order ON questions(exam_id, question_order);
-CREATE INDEX IF NOT EXISTS idx_exam_records_exam_id ON exam_records(exam_id);
-CREATE INDEX IF NOT EXISTS idx_exam_records_completed_at ON exam_records(completed_at DESC);
-
--- 啟用 Row Level Security (RLS)
 ALTER TABLE exams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE exam_records ENABLE ROW LEVEL SECURITY;
 
--- 建立政策：允許所有人讀取
+-- ============================================
+-- 5. 建立 RLS 政策
+-- ============================================
+
+-- 建立政策：允許所有人讀取 exams 和 questions
 CREATE POLICY "Allow public read access on exams" ON exams
   FOR SELECT USING (true);
 
 CREATE POLICY "Allow public read access on questions" ON questions
   FOR SELECT USING (true);
 
--- 建立政策：允許所有人讀取和插入考試記錄
-CREATE POLICY "Allow public read access on exam_records" ON exam_records
+-- 建立政策：允許所有人讀取 user_profile（用於登入驗證）
+CREATE POLICY "Allow public read access on user_profile for login" ON user_profile
   FOR SELECT USING (true);
 
-CREATE POLICY "Allow public insert access on exam_records" ON exam_records
+-- 建立政策：允許所有人插入 user_profile（用於註冊）
+CREATE POLICY "Allow public insert access on user_profile" ON user_profile
   FOR INSERT WITH CHECK (true);
 
--- 建立政策：允許所有人刪除考試記錄
--- 先刪除舊政策（如果存在）
-DROP POLICY IF EXISTS "Allow public delete access on exam_records" ON exam_records;
+-- 建立政策：允許所有操作（前端會手動過濾 user_id）
+-- 注意：由於使用自定義認證，RLS 無法知道當前用戶，所以在前端手動過濾
+CREATE POLICY "Allow users to read own exam_records" ON exam_records
+  FOR SELECT USING (true);
 
--- 建立新的刪除政策（DELETE 操作只需要 USING，不需要 WITH CHECK）
-CREATE POLICY "Allow public delete access on exam_records" ON exam_records
-  FOR DELETE 
-  USING (true);
+CREATE POLICY "Allow users to insert own exam_records" ON exam_records
+  FOR INSERT WITH CHECK (true);
 
+CREATE POLICY "Allow users to delete own exam_records" ON exam_records
+  FOR DELETE USING (true);
+
+-- ============================================
+-- 6. 創建 RPC 函數（認證相關）
+-- ============================================
+
+-- 創建註冊函數（RPC）
+CREATE OR REPLACE FUNCTION register_user(
+  p_username TEXT,
+  p_password TEXT
+)
+RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_user_id INTEGER;
+  v_password_hash TEXT;
+BEGIN
+  -- 檢查 username 是否已存在
+  IF EXISTS (SELECT 1 FROM user_profile WHERE username = p_username) THEN
+    RETURN json_build_object(
+      'success', false,
+      'error', '使用者名稱已存在'
+    );
+  END IF;
+
+  -- 加密密碼（使用 bcrypt）
+  v_password_hash := crypt(p_password, gen_salt('bf'));
+
+  -- 插入新用戶
+  INSERT INTO user_profile (username, password_hash)
+  VALUES (p_username, v_password_hash)
+  RETURNING id INTO v_user_id;
+
+  RETURN json_build_object(
+    'success', true,
+    'user_id', v_user_id,
+    'username', p_username
+  );
+EXCEPTION
+  WHEN unique_violation THEN
+    RETURN json_build_object(
+      'success', false,
+      'error', '使用者名稱已存在'
+    );
+  WHEN OTHERS THEN
+    RETURN json_build_object(
+      'success', false,
+      'error', '註冊失敗：' || SQLERRM
+    );
+END;
+$$;
+
+-- 創建登入驗證函數（RPC）
+CREATE OR REPLACE FUNCTION verify_user_login(
+  p_username TEXT,
+  p_password TEXT
+)
+RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_user_id INTEGER;
+  v_password_hash TEXT;
+  v_stored_hash TEXT;
+BEGIN
+  -- 查詢用戶
+  SELECT id, password_hash INTO v_user_id, v_stored_hash
+  FROM user_profile
+  WHERE username = p_username;
+
+  -- 檢查用戶是否存在
+  IF v_user_id IS NULL THEN
+    RETURN json_build_object(
+      'success', false,
+      'error', '使用者名稱或密碼錯誤'
+    );
+  END IF;
+
+  -- 驗證密碼
+  IF v_stored_hash = crypt(p_password, v_stored_hash) THEN
+    RETURN json_build_object(
+      'success', true,
+      'user_id', v_user_id,
+      'username', p_username
+    );
+  ELSE
+    RETURN json_build_object(
+      'success', false,
+      'error', '使用者名稱或密碼錯誤'
+    );
+  END IF;
+END;
+$$;
+
+-- ============================================
+-- 完成
+-- ============================================
+SELECT '資料庫初始化完成！' AS message;

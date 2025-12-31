@@ -36,8 +36,8 @@ const decrypt = (encrypted) => {
   }
 };
 
-// 加密後的密碼（原始密碼：codecat168）
-// 使用 encrypt('codecat168') 生成
+// 加密後的密碼（原始密碼：c....8）
+// 使用 encrypt('c....8') 生成
 export const ENCRYPTED_PASSWORD = 'ZHFnZmVkdTM5OQ==';
 
 // 驗證密碼

@@ -1,5 +1,6 @@
 // Supabase Database for Python DateTime Exam Platform
 import { supabase } from './lib/supabase';
+import { getCurrentUser } from './utils/auth';
 
 // 統一的答案驗證函數（確保計算分數和顯示結果使用相同邏輯）
 export const checkAnswer = (question, userAnswer, debug = false) => {
@@ -201,11 +202,19 @@ export const calculateScore = (exam, answers) => {
 // 儲存考試記錄
 export const saveExamRecord = async (examId, score, answers) => {
   try {
+    // 獲取當前用戶
+    const user = getCurrentUser();
+    if (!user) {
+      console.error('用戶未登入');
+      return null;
+    }
+
     // 檢查最近 5 秒內是否有完全相同的記錄（防止重複提交）
     const fiveSecondsAgo = new Date(Date.now() - 5000).toISOString();
     const { data: recentRecords } = await supabase
       .from('exam_records')
       .select('*')
+      .eq('user_id', user.id)
       .eq('exam_id', parseInt(examId))
       .eq('score', score.correct)
       .eq('total', score.total)
@@ -223,6 +232,7 @@ export const saveExamRecord = async (examId, score, answers) => {
     const { data, error } = await supabase
       .from('exam_records')
       .insert({
+        user_id: user.id, // 關聯當前用戶
         exam_id: parseInt(examId),
         score: score.correct,
         total: score.total,
@@ -247,6 +257,12 @@ export const saveExamRecord = async (examId, score, answers) => {
 // 獲取所有考試記錄（包含考試資訊）
 export const getExamRecords = async () => {
   try {
+    const user = getCurrentUser();
+    if (!user) {
+      console.log('用戶未登入，無法獲取考試記錄');
+      return [];
+    }
+
     const { data, error } = await supabase
       .from('exam_records')
       .select(`
@@ -257,6 +273,7 @@ export const getExamRecords = async () => {
           difficulty
         )
       `)
+      .eq('user_id', user.id)
       .order('completed_at', { ascending: false });
 
     if (error) {
@@ -285,6 +302,12 @@ export const getExamRecords = async () => {
 // 獲取最近的考試記錄（限制數量）
 export const getRecentExamRecords = async (limit = 5) => {
   try {
+    const user = getCurrentUser();
+    if (!user) {
+      console.log('用戶未登入，無法獲取最近考試記錄');
+      return [];
+    }
+
     const { data, error } = await supabase
       .from('exam_records')
       .select(`
@@ -295,6 +318,7 @@ export const getRecentExamRecords = async (limit = 5) => {
           difficulty
         )
       `)
+      .eq('user_id', user.id)
       .order('completed_at', { ascending: false })
       .limit(limit);
 
@@ -320,12 +344,22 @@ export const getRecentExamRecords = async (limit = 5) => {
   }
 };
 
-// 獲取考試統計資訊
+// 獲取考試統計資訊（只統計當前用戶的記錄）
 export const getExamStatistics = async () => {
   try {
+    const user = getCurrentUser();
+    if (!user) {
+      console.log('用戶未登入，無法獲取統計資訊');
+      return {
+        totalCompleted: 0,
+        averageScore: 0,
+      };
+    }
+
     const { data, error } = await supabase
       .from('exam_records')
-      .select('score, total, percentage');
+      .select('score, total, percentage')
+      .eq('user_id', user.id);
 
     if (error) {
       console.error('獲取統計資訊錯誤:', error);
@@ -360,16 +394,24 @@ export const getExamStatistics = async () => {
   }
 };
 
-// 刪除所有考試記錄
+// 刪除所有考試記錄（只刪除當前用戶的記錄）
 export const deleteAllExamRecords = async () => {
   console.log('[刪除記錄] 開始執行刪除操作...');
   
   try {
-    // 步驟1: 獲取所有記錄的 ID
-    console.log('[刪除記錄] 步驟1: 獲取所有記錄 ID...');
+    // 獲取當前用戶
+    const user = getCurrentUser();
+    if (!user) {
+      console.error('[刪除記錄] ❌ 用戶未登入');
+      return { success: false, error: '用戶未登入' };
+    }
+
+    // 步驟1: 獲取當前用戶所有記錄的 ID
+    console.log('[刪除記錄] 步驟1: 獲取當前用戶所有記錄 ID...');
     const { data: allRecords, error: fetchError } = await supabase
       .from('exam_records')
-      .select('id');
+      .select('id')
+      .eq('user_id', user.id);
 
     if (fetchError) {
       console.error('[刪除記錄] ❌ 獲取記錄錯誤:', fetchError);
