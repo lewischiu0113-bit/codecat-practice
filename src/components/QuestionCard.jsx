@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Code } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult = false, isCorrect: externalIsCorrect = null }) => {
   const [inputValue, setInputValue] = useState(userAnswer || '');
@@ -41,7 +44,39 @@ const QuestionCard = ({ question, index, userAnswer, onAnswerChange, showResult 
           {index + 1}
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3 whitespace-pre-line">{question.question}</h3>
+          <div className="text-lg font-semibold text-gray-800 mb-3">
+            <ReactMarkdown
+              components={{
+                code({ node, inline, className, children, ...props }) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return !inline && match ? (
+                    <div className="my-3">
+                      <SyntaxHighlighter
+                        style={oneDark}
+                        language={match[1]}
+                        PreTag="div"
+                        className="rounded-lg border border-gray-200 shadow-sm"
+                        customStyle={{
+                          margin: 0,
+                          borderRadius: '0.5rem',
+                        }}
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    </div>
+                  ) : (
+                    <code className="px-1.5 py-0.5 bg-gray-100 rounded text-sm font-mono text-primary" {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+              }}
+            >
+              {question.question}
+            </ReactMarkdown>
+          </div>
 
           {question.type === 'MCQ' && (
             <div className="space-y-2">
