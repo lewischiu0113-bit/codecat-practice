@@ -1,9 +1,10 @@
 // Supabase Database for Python DateTime Exam Platform
 import { supabase } from './lib/supabase';
 import { getCurrentUser } from './utils/auth';
+import { validateCodeWithTestCases } from './utils/pythonExecutor';
 
 // 統一的答案驗證函數（確保計算分數和顯示結果使用相同邏輯）
-export const checkAnswer = (question, userAnswer, debug = false) => {
+export const checkAnswer = async (question, userAnswer, debug = false) => {
   if (question.type === 'MCQ') {
     const result = userAnswer === question.correctAnswer;
     if (debug) {
@@ -69,6 +70,40 @@ export const checkAnswer = (question, userAnswer, debug = false) => {
     }
     
     return result;
+  } else if (question.type === 'CodeExecution') {
+    if (!userAnswer || !userAnswer.trim()) {
+      if (debug) {
+        console.log(`[CodeExecution] 題目 ${question.id}: 用戶答案為空`);
+      }
+      return false;
+    }
+
+    if (!question.testCases || !Array.isArray(question.testCases) || question.testCases.length === 0) {
+      if (debug) {
+        console.log(`[CodeExecution] 題目 ${question.id}: 沒有測試案例`);
+      }
+      return false;
+    }
+
+    try {
+      const validationResult = await validateCodeWithTestCases(userAnswer, question.testCases);
+      
+      if (debug) {
+        console.log(`[CodeExecution] 題目 ${question.id}: 驗證結果`, {
+          userAnswer: userAnswer.substring(0, 100) + '...',
+          testCasesCount: question.testCases.length,
+          passed: validationResult.passed,
+          results: validationResult.results,
+        });
+      }
+
+      return validationResult.success && validationResult.passed;
+    } catch (error) {
+      if (debug) {
+        console.error(`[CodeExecution] 題目 ${question.id}: 執行錯誤`, error);
+      }
+      return false;
+    }
   }
   return false;
 };
@@ -126,6 +161,7 @@ const getQuestionsByExamId = async (examId) => {
       options: q.options || [],
       correctAnswer: q.correct_answer,
       explanation: q.explanation,
+      testCases: q.test_cases || null, // 新增測試案例欄位
     }));
   } catch (err) {
     console.error('獲取問題錯誤:', err);
@@ -159,17 +195,19 @@ export const getExamById = async (id) => {
   }
 };
 
-// 計算分數
-export const calculateScore = (exam, answers) => {
+// 計算分數（改為異步函數以支援 CodeExecution）
+export const calculateScore = async (exam, answers) => {
   let correct = 0;
   console.log('=== 開始計算分數 ===');
   console.log('考試:', exam.title);
   console.log('總題數:', exam.questions.length);
   console.log('用戶答案:', answers);
   
-  exam.questions.forEach((question, index) => {
+  // 使用 for...of 以支援異步操作
+  for (let index = 0; index < exam.questions.length; index++) {
+    const question = exam.questions[index];
     const userAnswer = answers[index];
-    const isCorrect = checkAnswer(question, userAnswer, true);
+    const isCorrect = await checkAnswer(question, userAnswer, true);
     
     if (isCorrect) {
       correct++;
@@ -177,12 +215,12 @@ export const calculateScore = (exam, answers) => {
     
     console.log(`題目 ${index + 1} (ID: ${question.id}):`, {
       類型: question.type,
-      用戶答案: userAnswer,
+      用戶答案: typeof userAnswer === 'string' ? userAnswer.substring(0, 100) : userAnswer,
       正確答案: question.correctAnswer,
       是否正確: isCorrect,
       目前得分: `${correct}/${index + 1}`
     });
-  });
+  }
   
   const result = {
     correct,

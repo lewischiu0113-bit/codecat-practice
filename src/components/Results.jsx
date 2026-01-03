@@ -31,7 +31,7 @@ const Results = () => {
       setExam(examData);
       
       // 重新計算分數，確保使用最新的驗證邏輯（與顯示詳解使用相同邏輯）
-      const recalculatedScore = calculateScore(examData, answers);
+      const recalculatedScore = await calculateScore(examData, answers);
       setScore(recalculatedScore);
       
       setLoading(false);
@@ -113,37 +113,7 @@ const Results = () => {
 
       <div className="mb-6 animate-slide-in-up animate-delay-300">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">答案詳解</h2>
-        <div className="space-y-4">
-          {exam.questions.map((question, index) => {
-            const userAnswer = answers[index];
-            // 使用統一的驗證函數，確保與計算分數的邏輯完全一致
-            const isCorrect = checkAnswer(question, userAnswer, true);
-            
-            console.log(`[詳解顯示] 題目 ${index + 1} (ID: ${question.id}):`, {
-              類型: question.type,
-              用戶答案: userAnswer,
-              正確答案: question.correctAnswer,
-              是否正確: isCorrect
-            });
-
-            return (
-              <div
-                key={question.id}
-                className="animate-slide-in-up"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <QuestionCard
-                  question={question}
-                  index={index}
-                  userAnswer={userAnswer}
-                  onAnswerChange={() => {}}
-                  showResult={true}
-                  isCorrect={isCorrect}
-                />
-              </div>
-            );
-          })}
-        </div>
+        <QuestionResultsList exam={exam} answers={answers} />
       </div>
 
       <div className="flex justify-end gap-4 animate-slide-in-up animate-delay-500">
@@ -160,6 +130,70 @@ const Results = () => {
           返回列表
         </button>
       </div>
+    </div>
+  );
+};
+
+// 獨立的問題結果列表組件（支援異步驗證）
+const QuestionResultsList = ({ exam, answers }) => {
+  const [correctnessMap, setCorrectnessMap] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const validateAllAnswers = async () => {
+      const map = {};
+      for (let index = 0; index < exam.questions.length; index++) {
+        const question = exam.questions[index];
+        const userAnswer = answers[index];
+        const isCorrect = await checkAnswer(question, userAnswer, true);
+        map[index] = isCorrect;
+        
+        console.log(`[詳解顯示] 題目 ${index + 1} (ID: ${question.id}):`, {
+          類型: question.type,
+          用戶答案: typeof userAnswer === 'string' ? userAnswer.substring(0, 100) : userAnswer,
+          正確答案: question.correctAnswer,
+          是否正確: isCorrect
+        });
+      }
+      setCorrectnessMap(map);
+      setLoading(false);
+    };
+
+    validateAllAnswers();
+  }, [exam, answers]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <Loader2 className="animate-spin text-primary" size={24} />
+        <span className="ml-2 text-gray-600">驗證答案中...</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {exam.questions.map((question, index) => {
+        const userAnswer = answers[index];
+        const isCorrect = correctnessMap[index] || false;
+
+        return (
+          <div
+            key={question.id}
+            className="animate-slide-in-up"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <QuestionCard
+              question={question}
+              index={index}
+              userAnswer={userAnswer}
+              onAnswerChange={() => {}}
+              showResult={true}
+              isCorrect={isCorrect}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 };

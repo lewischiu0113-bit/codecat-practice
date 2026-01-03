@@ -96,11 +96,11 @@ const ExamInterface = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (window.confirm('確定要提交答案嗎？提交後將無法修改。')) {
       setIsSubmitted(true);
-      // Calculate score and navigate to results
-      const score = calculateScore(exam, answers);
+      // Calculate score and navigate to results (改為異步)
+      const score = await calculateScore(exam, answers);
       navigate(`/exam/${id}/results`, {
         state: { answers, score },
       });
