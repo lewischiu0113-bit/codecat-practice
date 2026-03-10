@@ -29,6 +29,7 @@ INSERT INTO exams (id, title, difficulty, description) VALUES
 (9, 'Python 程式碼執行練習', '初級', '學習編寫完整的 Python 程式碼，系統會執行您的程式碼並驗證輸出結果'),
 (10, 'Python 基礎綜合練習', '初級', '綜合練習 Python 基礎知識');
 
+
 -- 中階考試 (11-16)
 INSERT INTO exams (id, title, difficulty, description) VALUES
 (11, 'Python DateTime 進階', '中級', '學習更複雜的 datetime 格式化技巧'),
@@ -45,7 +46,9 @@ INSERT INTO exams (id, title, difficulty, description) VALUES
 (19, 'Python 單元測試 高階實作', '高級', '編寫完整的 unittest 測試程式碼'),
 (20, 'Python OS 模組 高階實作', '高級', '編寫完整的 Python 程式碼處理檔案系統操作'),
 (21, 'Python 檔案讀寫 高階實作', '高級', '編寫完整的 Python 程式碼處理檔案讀寫操作'),
-(22, 'Python 高階綜合實作', '高級', '綜合練習 Python 高階程式設計');
+(22, 'Python 高階綜合實作', '高級', '綜合練習 Python 高階程式設計'),
+(23, '考古題（卷一）', '高級', '考古題（卷一）'),
+(24, '考古題（卷二）', '高級', '考古題（卷二）');
 
 -- ============================================
 -- 步驟 3: 插入初階題目 (映射舊資料到新 ID)
@@ -320,7 +323,6 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
   {"input": "file.txt\nA\nB\nC", "expectedOutput": "A\nB\nC"}
 ]'::jsonb, 3);
 
--- 考試 22: Python 高階綜合實作
 INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, test_cases, question_order) VALUES
 (22, 'CodeExecution', E'## 三數相加\n\n編寫一個程式，讀取三個數字並輸出它們的總和。\n\n**說明：**\n- 每個數字都在單獨的一行上\n- 使用 `input()` 讀取輸入\n- 使用 `print()` 輸出結果\n\n**範例：**\n如果輸入是：\n```\n2\n3\n6\n```\n\n則輸出應該是：\n```\n11\n```', NULL, E'a = int(input())' || chr(10) || 'b = int(input())' || chr(10) || 'c = int(input())' || chr(10) || 'print(a + b + c)', '使用 input() 讀取三個數字，轉換為整數後相加，最後使用 print() 輸出結果。', '[
   {"input": "2\n3\n6", "expectedOutput": "11"},
@@ -337,5 +339,51 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
   {"input": "100\n50\n75", "expectedOutput": "100"},
   {"input": "-5\n-10\n-3", "expectedOutput": "-3"}
 ]'::jsonb, 3);
+-- 插入問題資料 - 考試 6 (考古題 卷一：煒杰)
+INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
+(23, 'MCQ', E'關於下列程式中的字串，哪個敘述正確？\n\nmy_str = "he says''Python is an interesting language''"', '["混用單引號與雙引號一定會造成 SyntaxError", "只要外層引號成對，內層可以是不同種類的引號，不會出錯", "Python 字串必須全部使用單引號，不能用雙引號", "只有在三重引號中才能同時使用單引號與雙引號"]'::jsonb, '只要外層引號成對，內層可以是不同種類的引號，不會出錯', '外層用雙引號包起來時，裡面可以安全地放單引號，不會造成語法錯誤。', 1),
+(23, 'MCQ', E'下列哪一個是 Python 中合法的多行字串寫法，且會被當成一個字串物件？', '["\"\"\"這其實是一個字串物件\"\"\"", "\"This is multiline\"", "\"這不是字串\"", "\"This is\" \"two strings\""]'::jsonb, '"""這其實是一個字串物件"""', '使用三重引號（"""..."""）可以建立跨多行的單一字串物件。', 2),
+(23, 'MCQ', E'執行下列程式時，len(str_test) 的意義為何？\n\nstr_test = """A string that can span multiple lines"""', '["一定是 41", "會依實際字元數計算長度，而不是題目隨便寫的數字", "len() 無法用在三重引號字串", "len() 只會計算空格不算字母"]'::jsonb, '會依實際字元數計算長度，而不是題目隨便寫的數字', 'len() 會計算實際字元數，三重引號本質上仍是普通字串。', 3),
+(23, 'MCQ', E'下列程式執行後，new_val 的型別為何？\n\nnew_val = 4647564755 + 857685795468745.456', '["int", "float", "str", "complex"]'::jsonb, 'float', '整數與浮點數運算時，只要表達式中有 float，結果就會升級為 float。', 4),
+(23, 'MCQ', E'在 Python 中，下列哪個運算結果正確反映了布林值與整數的關係？\n\nmy_bool = False + 5 - True + 35//4', '["True == 2, False == -1，所以結果是 2", "True == 1, False == 0，所以最後結果是 12", "True 與 False 不能與整數相加，一定拋出 TypeError", "布林值在算術運算中一律會被當成 0"]'::jsonb, 'True == 1, False == 0，所以最後結果是 12', '在算術運算中 True 會被當成 1、False 當成 0，因此可計算出 12。', 5),
+(23, 'MCQ', E'執行下列程式，輸出會是什麼？\n\n```python\nprint("Here is what I have:", (7/2) + (False or True) + (9%3))\n```', '["Here is what I have: 4.5", "Here is what I have: 5", "TypeError，因為布林值不能和數字相加", "Here is what I have: 3.5"]'::jsonb, 'Here is what I have: 4.5', '7/2 是 3.5，False or True 結果為 True(數值 1)，9%3 為 0，總和 4.5。', 6),
+(23, 'MCQ', E'關於下列程式，哪個敘述正確？\n\n```python\ncount = input("enter count: ")\nprint(count + 1)\n```', '["一定會印出輸入值加一，例如 32768", "會發生 TypeError，因為 input 回傳字串，不能直接與 int 相加", "input 會自動轉成 int，所以可以正常加一", "會印出字串拼接結果，例如 \"327671\""]'::jsonb, '會發生 TypeError，因為 input 回傳字串，不能直接與 int 相加', 'input() 回傳字串，要做數值運算必須先轉成 int/float。', 7),
+(23, 'MCQ', E'關於 format() 預設對齊方式，下列哪個敘述是正確的？', '["字串與數字預設都靠左", "字串預設靠右，數字預設靠左", "字串預設靠左，數字預設靠右", "字串與數字預設都置中"]'::jsonb, '字串預設靠左，數字預設靠右', 'format() 及對齊規則中，字串預設左對齊，數值預設右對齊。', 8),
+(23, 'MCQ', E'下列哪個格式字元適合用來把浮點數輸出成科學記號（scientific notation）？', '["s", "d", "e", "x"]'::jsonb, 'e', '"e" 或 "E" 用於科學記號；"s" 則用於字串。', 9),
+(23, 'MCQ', E'執行下列程式時，會發生哪一種錯誤？\n\n```python\nx = 0\ny = 1\nz = "2"\nsum = x + y + z\n```', '["IndentationError", "ArithmeticError", "TypeError", "SyntaxError"]'::jsonb, 'TypeError', '整數與字串相加會產生 TypeError：不相容型別的運算。', 10),
+(23, 'MCQ', E'在 try/except 區塊中捕捉到例外 e 後，若要「保留原始 stack trace」重新拋出錯誤，應該使用哪一個語句？', '["raise", "raise e", "raise Exception(e)", "raise ValueError(\"Error\")"]'::jsonb, 'raise', '單獨使用 raise 會重新拋出目前正在處理的例外，保留原始堆疊資訊。', 11),
+(23, 'MCQ', E'原始檔案 info.txt 內容為：\nJames:1\nBryan:2\nLisa:3\nJessica:4\nRuss:2\n\n程式先以 a 模式附加寫入 "Tom:2\\n"，再逐行讀入並把冒號後的數字轉成 float 相加，最後輸出 values。\n最終 values 會是多少？', '["12.0", "13.0", "14.0", "6.0"]'::jsonb, '14.0', '原有 1+2+3+4+2=12，再加上 Tom:2，總和為 14.0。', 12),
+(23, 'MCQ', E'執行下列指令時：\n\n```bash\npython -m unittest -v myModule.py\n```\n\n哪個敘述正確？', '["-m 是 unittest 模組的參數，-v 是 Python 直譯器的參數", "-m 表示以模組方式執行 unittest，-v 表示 verbose 模式顯示詳細測試結果", "-m 和 -v 兩個參數都屬於作業系統 shell 的選項", "這個指令會啟動一個 HTTP 伺服器"]'::jsonb, '-m 表示以模組方式執行 unittest，-v 表示 verbose 模式顯示詳細測試結果', '-m 是 Python 直譯器參數，指定以模組方式執行；-v 是 unittest 模組的 verbose 參數。', 13),
+(23, 'MCQ', E'下列哪一個 unittest 斷言最適合用來檢查某個回傳值是否為 5？', '["self.assertTrue(result)", "self.assertEqual(result, 5)", "self.assertIn(5, result)", "self.assertRaises(ValueError, func)"]'::jsonb, 'self.assertEqual(result, 5)', '要檢查回傳值是否等於某個具體數值時，用 assertEqual 最直接。', 14),
+(23, 'MCQ', E'對於程式碼 `3 + False`，下列哪個敘述正確？', '["結果是 False", "結果是 3，因為 False 會被當作 0", "一定拋出 TypeError", "結果是 4，因為 False 會被當作 1"]'::jsonb, '結果是 3，因為 False 會被當作 0', '在算術運算中 False 相當於 0，True 相當於 1。', 15),
+(23, 'MCQ', E'在命令列執行 python -m pydoc myModule 時，pydoc 會優先在哪裡尋找 myModule？', '["只在標準函式庫中尋找", "只在 site-packages 中尋找", "先在目前執行命令的目錄中尋找對應模組或資料夾", "永遠從網路下載文件"]'::jsonb, '先在目前執行命令的目錄中尋找對應模組或資料夾', '執行目錄會被放在 sys.path 前面，因此會先找當前目錄下的模組。', 16),
+(23, 'MCQ', E'當你執行 python -m pydoc -p 9898 時，會發生什麼事？', '["只是在終端機印出說明文件", "產生一個靜態 HTML 檔並輸出到 Example.html", "啟動一個在 9898 埠上的 pydoc 網頁伺服器", "關閉所有舊的 pydoc 伺服器"]'::jsonb, '啟動一個在 9898 埠上的 pydoc 網頁伺服器', '-p 參數會啟動一個 HTTP server，讓你用瀏覽器瀏覽文件。', 17),
+(23, 'MCQ', E'關於 sys.argv，下列哪個說法正確？\n\n假設執行：\n```bash\npython program.py Alice 85 90 95\n```', '["sys.argv[0] 是 Alice", "sys.argv[1:] 只會包含成績，不含姓名", "成績個數可以用 len(sys.argv) - 2 計算", "sys.argv 只在互動模式中存在"]'::jsonb, '成績個數可以用 len(sys.argv) - 2 計算', 'argv[0] 是程式檔案名稱，argv[1] 是姓名，其餘才是成績，因此是總長度減去 2。', 18),
+(23, 'MCQ', E'下列哪一個是正確使用 os.chdir() 切換到 Windows 目錄 C:\\tmp 的寫法？', '["os.chdir(''c:\\tmp'')", "os.chdir(\"c:\\tmp\")", "os.chdir(r''c:\\tmp'')", "os.chdir(''/c/tmp'')"]'::jsonb, 'os.chdir(r''c:\\tmp'')', '在一般字串中 \\t 會被當成跳脫字元 Tab，因此要用 raw string r''c:\\tmp'' 才安全。', 19),
+(23, 'MCQ', E'若有 measurements 這個浮點數清單，要將每個數字格式化為兩位小數並用逗號加空格串接，哪一段程式最適合？', '["print(\", \".join(str(f) for f in measurements))", "print(\", \".join(\"%.2f\" % f for f in measurements))", "print(\"%.2f\" % measurements)", "print(measurements.join(\", \"))"]'::jsonb, 'print(", ".join("%.2f" % f for f in measurements))', '舊式格式化 %.2f 可控制到兩位小數，再用 join 連接字串。', 20);
+
+-- 插入問題資料 - 考試 7 (考古題 卷二：千喬)
+INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
+(24, 'MCQ', E'下列哪個寫法可以根據今天日期印出正確的星期縮寫（Mon/Tue/...），已知 days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]？', '["today = dt.datetime.now(); wd = dt.date.weekday(today); print(days[wd])", "today = dt.datetime.now(); wd = today.day; print(days[wd])", "wd = dt.datetime.weekday; print(days[wd])", "wd = dt.datetime.date; print(days[wd])"]'::jsonb, 'today = dt.datetime.now(); wd = dt.date.weekday(today); print(days[wd])', 'weekday() 回傳 0~6 的索引，恰好可對應 days 清單。', 1),
+(24, 'MCQ', E'關於 datetime.date 物件相減的說法何者正確？\n\n```python\nendTime = date(2018,1,20)\nstartTime = date(2018,1,15)\nresult = endTime - startTime\n```', '["result 是整數 5，代表 5 天", "result 是 timedelta 物件，字串表示可能是 ''5 days, 0:00:00''", "result 是字串 ''5 days''", "這樣寫一定拋出 TypeError"]'::jsonb, 'result 是 timedelta 物件，字串表示可能是 ''5 days, 0:00:00''', '兩個 date 相減會得到 datetime.timedelta 物件，而非單純整數。', 2),
+(24, 'MCQ', E'想要計算兩個日期之間的秒數，哪一段程式最適合？\n\n```python\nstartTime = date(2018,1,15)\nendTime   = date(2018,1,20)\n```', '["print(endTime - startTime)", "timeDiff = endTime - startTime; print(int(timeDiff.total_seconds()))", "print((endTime - startTime)/60)", "print(int(datetime.timedelta(endTime - startTime)))"]'::jsonb, 'timeDiff = endTime - startTime; print(int(timeDiff.total_seconds()))', 'total_seconds() 會回傳 timedelta 的總秒數，再轉成 int 即可。', 3),
+(24, 'MCQ', E'關於三元運算子（conditional expression） result = A if condition else B，下列哪個敘述正確？', '["condition 為 True 時，回傳 B", "condition 為 False 時，回傳 A", "condition 為 True 時，表達式值為 A", "三元運算子只能用在布林以外型別"]'::jsonb, 'condition 為 True 時，表達式值為 A', '語法「A if condition else B」代表條件成立時取 A，否則取 B。', 4),
+(24, 'MCQ', E'若 t 是一個長字串，t.find("will") 與 t.rfind("will") 差別為何？', '["find 與 rfind 完全一樣", "find 從左到右找第一次出現位置，rfind 從右到左找最後一次出現位置", "find 找子字串長度，rfind 找子字串個數", "rfind 只能用在 list 不適用字串"]'::jsonb, 'find 從左到右找第一次出現位置，rfind 從右到左找最後一次出現位置', 'find 回傳第一個匹配的位置，rfind 回傳最後一個匹配的位置。', 5),
+(24, 'MCQ', E'在 for 迴圈中使用 continue 的主要效果是什麼？', '["結束整個迴圈", "結束程式", "跳過本次迭代剩餘程式碼，直接進入下一輪", "重新從第一輪開始迴圈"]'::jsonb, '跳過本次迭代剩餘程式碼，直接進入下一輪', 'continue 會略過後續程式碼，只進入下一次迭代。', 6),
+(24, 'MCQ', E'關於下列程式，哪個選項最貼近題目說明「略過在 items 中的數字，不要加總它們」？\n\n```python\nfor e in elements:\n    if e in items:\n        ____\n    count += e\n```', '["break", "continue", "pass", "return"]'::jsonb, 'continue', '當 e 在 items 中時用 continue，可跳過當次的 count += e。', 7),
+(24, 'MCQ', E'若某行程式碼被 # 註解掉，例如 # my_list.sort()，會有什麼影響？', '["程式仍然會執行 sort()", "該行不會執行，因此資料順序不會被更動", "註解只影響顯示，不影響執行結果", "Python 會拋出 SyntaxError"]'::jsonb, '該行不會執行，因此資料順序不會被更動', '# 開頭代表該行是註解，不會被直譯器執行。', 8),
+(24, 'MCQ', E'在 pydoc 的輸出中，模組頂層的變數（例如 __author__、__copyright__）通常會出現在：
+哪一個區塊？', '["NAME", "DESCRIPTION", "FUNCTIONS", "DATA"]'::jsonb, 'DATA', '模組層級的變數會被列在 DATA 區塊中。', 9),
+(24, 'MCQ', E'在 Python 互動環境中要查看 Example1 模組的說明，正確步驟為何？', '["直接輸入 help(Example1) 就好，無須 import", "先 import Example1，再呼叫 help(Example1)", "呼叫 Example1.help()", "請改用 python -m pydoc Example1，help() 無法用於模組"]'::jsonb, '先 import Example1，再呼叫 help(Example1)', 'help() 需要已載入的物件，因此要先 import 模組。', 10),
+(24, 'MCQ', E'執行 python -m pydoc -p 8989 的主要效果為何？', '["在終端機列印 sys 模組說明", "為指定模組產生一個 Example.html 檔案", "啟動 pydoc 網頁伺服器在 8989 埠供瀏覽說明文件", "移除所有已安裝的文件"]'::jsonb, '啟動 pydoc 網頁伺服器在 8989 埠供瀏覽說明文件', '-p 會在指定 port 上啟動 HTTP 文件伺服器。', 11),
+(24, 'MCQ', E'關於 sys.executable，下列哪一個敘述是正確的？', '["回傳目前 Python 的版本字串", "回傳目前 Python 直譯器可執行檔的完整路徑", "回傳目前作業系統平台名稱", "回傳 sys.path 內容"]'::jsonb, '回傳目前 Python 直譯器可執行檔的完整路徑', '例如 Windows 上會類似 C:\\Python311\\python.exe。', 12),
+(24, 'MCQ', E'math.floor 與 math.ceil 的共同特性為何？', '["都可以直接吃 list 做整批運算", "都只能接受非負整數", "都接受單一數值（int 或 float）並回傳整數", "兩者僅用於科學記號轉換"]'::jsonb, '都接受單一數值（int 或 float）並回傳整數', 'floor/ceil 都是針對單一數值的向下／向上取整函數。', 13),
+(24, 'MCQ', E'關於 math.fsum(iterable) 下列哪個選項最貼近它的用途？', '["計算階乘", "高精度地加總一個數值序列", "將所有元素向上取整後組成新 list", "將 list 轉成 tuple"]'::jsonb, '高精度地加總一個數值序列', 'fsum 以較高精度處理浮點數加總，適合大量小數相加。', 14),
+(24, 'MCQ', E'如果對一個檔案物件呼叫不存在的 readall() 方法，最有可能拋出哪一種錯誤？', '["SyntaxError", "EOFError", "SystemError", "AttributeError 或類似的 method not found 錯誤"]'::jsonb, 'AttributeError 或類似的 method not found 錯誤', '檔案物件沒有 readall() 方法，會是屬性／方法不存在型的錯誤。', 15),
+(24, 'MCQ', E'下列哪一段程式最能正確取得目前 Python 解譯器的安裝路徑？', '["print(sys.path)", "print(sys.platform)", "print(sys.version)", "print(sys.executable)"]'::jsonb, 'print(sys.executable)', 'sys.executable 會給出目前直譯器可執行檔的完整路徑。', 16),
+(24, 'MCQ', E'若有 timeDiff 這個 timedelta 物件，想取得它代表的總秒數，下列哪種作法是正確的？', '["int(timeDiff)", "timeDiff.seconds 乘以 60", "timeDiff.total_seconds()", "直接以 str(timeDiff) 轉成秒數"]'::jsonb, 'timeDiff.total_seconds()', 'total_seconds() 會回傳以 float 表示的完整秒數。', 17),
+(24, 'MCQ', E'關於 help 與 import，下列說法何者正確？', '["help 是關鍵字，不需要括號", "import 是函式，可以寫成 import()", "help 是函式，需要括號；import 是語法關鍵字，不能加括號", "兩者都可以視情況省略括號"]'::jsonb, 'help 是函式，需要括號；import 是語法關鍵字，不能加括號', 'help(...) 會讀取物件 docstring；import 則是語法，不是函式。', 18),
+(24, 'MCQ', E'在使用舊式格式化字串時，下列哪一個寫法可以印出「你的得分是 95.50」？\n\n假設 score = 95.5', '["print(\"你的得分是 %2f\" % score)", "print(\"你的得分是 %.2f\" % score)", "print(\"你的得分是 %d\" % score)", "print(\"你的得分是 %s\" % score)"]'::jsonb, 'print("你的得分是 %.2f" % score)', '%.2f 表示固定兩位小數的浮點數輸出。', 19),
+(24, 'MCQ', E'若有 my_items = ([8, ''7'', 1+2j, False]) 這樣的宣告，關於 my_items 的實際型別，下列哪個正確？', '["tuple，因為外層有 ()", "list，因為只有一個元素且 () 只是運算優先權的括號", "set", "str"]'::jsonb, 'list，因為只有一個元素且 () 只是運算優先權的括號', '( [ ... ] ) 仍然是一個 list，外層的 () 只是一般括號，不會自動變成 tuple。', 20);
 
 SELECT '考試資料重構完成！共 22 個考試單元已建立。' AS message;

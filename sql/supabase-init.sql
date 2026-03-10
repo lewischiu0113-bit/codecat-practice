@@ -73,7 +73,6 @@ CREATE INDEX IF NOT EXISTS idx_exam_records_completed_at ON exam_records(complet
 
 -- 詳見 題庫.sql
 
-
 -- ============================================
 -- 4. 啟用 Row Level Security (RLS)
 -- ============================================
