@@ -1,7 +1,7 @@
 -- ============================================
 -- CodeCat Practice 完整資料庫重構腳本
 -- 整合：初階題目 + 中階題目 + 高階手寫題
--- 總計：22 個考試單元
+-- 總計：25 個考試單元
 -- ============================================
 
 -- 步驟 1: 清除所有現有資料與重置 ID
@@ -48,7 +48,8 @@ INSERT INTO exams (id, title, difficulty, description) VALUES
 (21, 'Python 檔案讀寫 高階實作', '高級', '編寫完整的 Python 程式碼處理檔案讀寫操作'),
 (22, 'Python 高階綜合實作', '高級', '綜合練習 Python 高階程式設計'),
 (23, '考古題（卷一）', '高級', '考古題（卷一）'),
-(24, '考古題（卷二）', '高級', '考古題（卷二）');
+(24, '考古題（卷二）', '高級', '考古題（卷二）'),
+(25, 'Python 字串格式化三大寫法（初階）', '初級', '練習 % 運算子、str.format() 與 f-string 的基礎選擇題');
 
 -- ============================================
 -- 步驟 3: 插入初階題目 (映射舊資料到新 ID)
@@ -323,6 +324,7 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
   {"input": "file.txt\nA\nB\nC", "expectedOutput": "A\nB\nC"}
 ]'::jsonb, 3);
 
+-- 考試 22: Python 高階綜合實作
 INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, test_cases, question_order) VALUES
 (22, 'CodeExecution', E'## 三數相加\n\n編寫一個程式，讀取三個數字並輸出它們的總和。\n\n**說明：**\n- 每個數字都在單獨的一行上\n- 使用 `input()` 讀取輸入\n- 使用 `print()` 輸出結果\n\n**範例：**\n如果輸入是：\n```\n2\n3\n6\n```\n\n則輸出應該是：\n```\n11\n```', NULL, E'a = int(input())' || chr(10) || 'b = int(input())' || chr(10) || 'c = int(input())' || chr(10) || 'print(a + b + c)', '使用 input() 讀取三個數字，轉換為整數後相加，最後使用 print() 輸出結果。', '[
   {"input": "2\n3\n6", "expectedOutput": "11"},
@@ -386,4 +388,27 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 (24, 'MCQ', E'在使用舊式格式化字串時，下列哪一個寫法可以印出「你的得分是 95.50」？\n\n假設 score = 95.5', '["print(\"你的得分是 %2f\" % score)", "print(\"你的得分是 %.2f\" % score)", "print(\"你的得分是 %d\" % score)", "print(\"你的得分是 %s\" % score)"]'::jsonb, 'print("你的得分是 %.2f" % score)', '%.2f 表示固定兩位小數的浮點數輸出。', 19),
 (24, 'MCQ', E'若有 my_items = ([8, ''7'', 1+2j, False]) 這樣的宣告，關於 my_items 的實際型別，下列哪個正確？', '["tuple，因為外層有 ()", "list，因為只有一個元素且 () 只是運算優先權的括號", "set", "str"]'::jsonb, 'list，因為只有一個元素且 () 只是運算優先權的括號', '( [ ... ] ) 仍然是一個 list，外層的 () 只是一般括號，不會自動變成 tuple。', 20);
 
-SELECT '考試資料重構完成！共 22 個考試單元已建立。' AS message;
+-- 新 ID 25: Python 字串格式化三大寫法（初階）
+INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
+(25, 'MCQ', E'下列哪一種寫法使用 `%` 運算子進行字串格式化？', '["print(\"Hello {}, version {}\".format(name, version))", "print(f\"Hello {name}, version {version}\")", "print(\"Hello %s, version %.1f\" % (name, version))", "print(\"Hello \" + name + \", version \" + version)"]'::jsonb, 'print("Hello %s, version %.1f" % (name, version))', '有 `%s`、`%.1f` 並搭配 `% (...)` 的就是舊式 `%` 格式化。', 1),
+(25, 'MCQ', E'下列哪一種寫法使用 `str.format()`？', '["print(\"Hello {}, version {}\".format(name, version))", "print(\"Hello %s, version %.1f\" % (name, version))", "print(f\"Hello {name}, version {version}\")", "print(\"Hello {name}, version {version}\")"]'::jsonb, 'print("Hello {}, version {}".format(name, version))', '使用 `.format(...)` 方法的就是 new style 格式化。', 2),
+(25, 'MCQ', E'下列哪一種寫法使用 f-string？', '["print(\"Hello {}, version {}\".format(name, version))", "print(f\"Hello {name}, version {version}\")", "print(\"Hello %s\" % name)", "print(\"Hello {name}\")"]'::jsonb, 'print(f"Hello {name}, version {version}")', 'f-string 會在字串前加上 `f`，並在 `{}` 內直接放變數。', 3),
+(25, 'MCQ', E'給定：\n\n```python\nname = "Gemini"\nversion = 3.5\nprint("Hello %s, version %.1f" % (name, version))\n```\n\n輸出為何？', '["Hello Gemini, version 3.5", "Hello name, version version", "Hello Gemini, version 3.50", "Hello Gemini version 3.5"]'::jsonb, 'Hello Gemini, version 3.5', '`%s` 放字串，`%.1f` 代表小數 1 位，因此是 `3.5`。', 4),
+(25, 'MCQ', E'給定：\n\n```python\nname = "Gemini"\nversion = 3.5\nprint("Hello {}, version {}".format(name, version))\n```\n\n輸出為何？', '["Hello Gemini, version 3.5", "Hello {}, version {}", "Hello Gemini version 3.5", "Hello Gemini, version %.1f"]'::jsonb, 'Hello Gemini, version 3.5', '`{}` 會依序套入 `name` 與 `version`。', 5),
+(25, 'MCQ', E'給定：\n\n```python\nname = "Gemini"\nversion = 3.5\nprint(f"Hello {name}, version {version}")\n```\n\n輸出為何？', '["Hello Gemini, version 3.5", "Hello {name}, version {version}", "Hello Gemini version", "Hello Gemini, version %.1f"]'::jsonb, 'Hello Gemini, version 3.5', 'f-string 會直接把 `{name}`、`{version}` 插值成變數內容。', 6),
+(25, 'MCQ', E'在 `%` 格式化中，`%s` 通常用來放哪種類型？', '["整數", "字串", "布林", "列表"]'::jsonb, '字串', '`%s` 是字串佔位符（也可轉成字串顯示其他型別）。', 7),
+(25, 'MCQ', E'在 `%` 格式化中，`%.1f` 的意思是什麼？', '["整數補零到 1 位", "浮點數保留 1 位小數", "字串長度限制 1", "科學記號保留 1 位"]'::jsonb, '浮點數保留 1 位小數', '`.1f` 表示浮點數小數點後 1 位。', 8),
+(25, 'MCQ', E'下列哪一行會輸出 `3.50`？（version = 3.5）', '["print(\"%.1f\" % version)", "print(\"%.2f\" % version)", "print(\"{}\".format(version))", "print(f\"{version}\")"]'::jsonb, 'print("%.2f" % version)', '`%.2f` 會輸出 2 位小數，因此 `3.50`。', 9),
+(25, 'MCQ', E'在 `str.format()` 中，`{}` 的主要作用是什麼？', '["註解", "變數佔位符", "運算子", "型別宣告"]'::jsonb, '變數佔位符', '`{}` 是 format 字串中的佔位符，會由 `.format(...)` 提供值。', 10),
+(25, 'MCQ', E'下列哪一個 `str.format()` 寫法可輸出 `Hello Gemini`？', '["\"Hello {}\".format(\"Gemini\")", "\"Hello {name}\"", "\"Hello %s\" % \"Gemini\"", "f\"Hello name\""]'::jsonb, '"Hello {}".format("Gemini")', '`{}` 會被 `.format("Gemini")` 取代。', 11),
+(25, 'MCQ', E'f-string 的語法特徵是哪一個？', '["字串前加 `%`", "字串前加 `f`，並在 `{}` 放變數/表達式", "一定要呼叫 `.format()`", "只能插入字串不能插入數字"]'::jsonb, '字串前加 `f`，並在 `{}` 放變數/表達式', 'f-string 使用 `f"..."`，可在 `{}` 內寫變數或運算式。', 12),
+(25, 'MCQ', E'下列哪一行可以在 f-string 內直接做運算？', '["print(f\"{version + 1}\")", "print(\"{version + 1}\".format())", "print(\"%f\" % (version + ))", "print(f\"version\")"]'::jsonb, 'print(f"{version + 1}")', 'f-string 的 `{}` 內可直接放 Python 表達式。', 13),
+(25, 'MCQ', E'如果要讓三種寫法都輸出 `Hello Gemini, version 3.5`，下列哪個敘述正確？', '["只有 `%` 可以做到", "只有 f-string 可以做到", "三種都可以做到", "三種都做不到"]'::jsonb, '三種都可以做到', '`%`、`str.format()`、f-string 都能達到相同輸出。', 14),
+(25, 'MCQ', E'在可讀性上，初學者通常最容易直觀理解哪一種插值寫法？', '["f-string", "`%` 運算子", "字串相加一定最好", "三者都一樣無差異"]'::jsonb, 'f-string', 'f-string 直接在字串中看到變數名，通常最直觀。', 15),
+(25, 'MCQ', E'下列哪個是 `%` 寫法對應 `name=\"Gemini\"`、`version=3.5` 的正確版本？', '["\"Hello %s, version %.1f\" % (name, version)", "\"Hello {}, version {}\" % (name, version)", "\"Hello %s, version %.1f\".format(name, version)", "f\"Hello %s, version %.1f\""]'::jsonb, '"Hello %s, version %.1f" % (name, version)', '`%` 寫法必須是「格式字串 % tuple」。', 16),
+(25, 'MCQ', E'下列哪個是 `str.format()` 寫法對應 `name` 與 `version` 的正確版本？', '["\"Hello {}, version {}\".format(name, version)", "\"Hello %s, version %.1f\" % (name, version)", "f\"Hello {}, version {}\"", "\"Hello {name}, version {version}\" % (name, version)"]'::jsonb, '"Hello {}, version {}".format(name, version)', 'new style 的標準寫法是 `"...{}".format(...)`。', 17),
+(25, 'MCQ', E'下列哪個是 f-string 寫法對應 `name` 與 `version` 的正確版本？', '["f\"Hello {name}, version {version}\"", "\"Hello {}, version {}\".format(name, version)", "\"Hello %s, version %.1f\" % (name, version)", "\"fHello {name}, version {version}\""]'::jsonb, 'f"Hello {name}, version {version}"', '字串前要有 `f`，並用 `{}` 包住變數。', 18),
+(25, 'MCQ', E'若 `name = "Gemini"`，以下哪一行會得到 `Hello Gemini`？', '["print(f\"Hello {name}\")", "print(\"Hello {name}\")", "print(\"Hello %d\" % name)", "print(\"Hello\" + 1)"]'::jsonb, 'print(f"Hello {name}")', '`"Hello {name}"` 若沒有 f 或 format 不會插值。', 19),
+(25, 'MCQ', E'總結三種格式化：`%`、`.format()`、f-string，下列何者正確？', '["三者都屬於 Python 合法且常見的字串格式化方式", "只有 `%` 是合法語法", "`.format()` 已被 Python 移除", "f-string 只能在 Python 2 使用"]'::jsonb, '三者都屬於 Python 合法且常見的字串格式化方式', '三種都是合法做法；實務上常見 f-string 與 format。', 20);
+
+SELECT '考試資料重構完成！共 25 個考試單元已建立。' AS message;
