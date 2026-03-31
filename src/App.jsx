@@ -6,6 +6,7 @@ import ExamList from './components/ExamList';
 import ExamInterface from './components/ExamInterface';
 import Results from './components/Results';
 import History from './components/History';
+import ArticleGuide from './components/ArticleGuide';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -33,6 +34,7 @@ function App() {
                       <Route path="/exam/:id" element={<ExamInterface />} />
                       <Route path="/exam/:id/results" element={<Results />} />
                       <Route path="/history" element={<History />} />
+                      <Route path="/articles" element={<ArticleGuide />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </main>

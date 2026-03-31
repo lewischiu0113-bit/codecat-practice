@@ -1,5 +1,43 @@
 // Python 程式碼執行工具（使用 Pyodide）
 let pyodideInstance = null;
+let pyodideScriptLoadingPromise = null;
+
+const PYODIDE_VERSION = '0.29.0';
+const PYODIDE_INDEX_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
+const PYODIDE_SCRIPT_URL = `${PYODIDE_INDEX_URL}pyodide.js`;
+
+const ensurePyodideScript = async () => {
+  if (typeof window === 'undefined') {
+    throw new Error('Pyodide 僅支援瀏覽器環境');
+  }
+
+  if (typeof window.loadPyodide === 'function') {
+    return;
+  }
+
+  if (!pyodideScriptLoadingPromise) {
+    pyodideScriptLoadingPromise = new Promise((resolve, reject) => {
+      const existingScript = document.querySelector(`script[src="${PYODIDE_SCRIPT_URL}"]`);
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve(), { once: true });
+        existingScript.addEventListener('error', () => reject(new Error('載入 Pyodide 腳本失敗')), { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = PYODIDE_SCRIPT_URL;
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('載入 Pyodide 腳本失敗'));
+      document.head.appendChild(script);
+    }).catch((error) => {
+      pyodideScriptLoadingPromise = null;
+      throw error;
+    });
+  }
+
+  await pyodideScriptLoadingPromise;
+};
 
 // 初始化 Pyodide
 export const initPyodide = async () => {
@@ -8,10 +46,9 @@ export const initPyodide = async () => {
   }
 
   try {
-    // 動態載入 Pyodide
-    const pyodideModule = await import('pyodide');
-    pyodideInstance = await pyodideModule.loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.29.0/full/',
+    await ensurePyodideScript();
+    pyodideInstance = await window.loadPyodide({
+      indexURL: PYODIDE_INDEX_URL,
     });
     return pyodideInstance;
   } catch (error) {

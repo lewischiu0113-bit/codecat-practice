@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, BookOpen, History, LogOut } from "lucide-react";
+import { LayoutDashboard, BookOpen, History, ScrollText, LogOut } from "lucide-react";
 import { clsx } from "clsx";
 import { useAuth } from "../contexts/AuthContext";
 import SidebarBackground from "./SidebarBackground";
@@ -31,6 +31,11 @@ const Sidebar = () => {
       path: "/history",
       label: "歷史紀錄",
       icon: History,
+    },
+    {
+      path: "/articles",
+      label: "重點整理",
+      icon: ScrollText,
     },
   ];
 

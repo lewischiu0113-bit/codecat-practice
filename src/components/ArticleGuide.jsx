@@ -1,0 +1,396 @@
+const sections = [
+  { id: "random", title: "Python random 模組對照表總整理" },
+  { id: "operator-priority", title: "運算子優先順序" },
+  { id: "datetime", title: "時間格式化（datetime）" },
+  { id: "format-output", title: "format格式化輸出" },
+  { id: "unittest", title: "unittest 標準格式" },
+  { id: "unittest-cli", title: "unittest 命令行選項" },
+  { id: "file-open", title: "開檔讀檔（open 模式）" },
+  { id: "pydoc", title: "pydoc 讀取模組區塊" },
+  { id: "errors", title: "error 種類" },
+  { id: "compare", title: "檔案／物件比較概念" },
+  { id: "three-format", title: "三種格式化（%, format, f-string）" },
+];
+
+const tableClass =
+  "min-w-full border-collapse border border-gray-300 text-sm text-left";
+const thClass = "border border-gray-300 bg-gray-50 px-3 py-2 font-semibold";
+const tdClass = "border border-gray-300 px-3 py-2 align-top";
+
+const ArticleGuide = () => {
+  return (
+    <div className="p-8 max-w-7xl mx-auto space-y-8 text-gray-800">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h1 className="text-2xl font-bold mb-2">Python 靜態教學文章</h1>
+        <p className="text-gray-600">
+          這頁提供可讀性高的教學內容，含表格、程式碼、重點整理，並可透過目錄快速跳轉章節。
+        </p>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-3">目錄</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {sections.map((section) => (
+            <a
+              key={section.id}
+              href={`#${section.id}`}
+              className="text-primary hover:underline"
+            >
+              - {section.title}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <section id="random" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+        <h2 className="text-xl font-semibold">Python random 模組對照表總整理</h2>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th className={thClass}>函式</th>
+                <th className={thClass}>用途（幹嘛用）</th>
+                <th className={thClass}>語法範例</th>
+                <th className={thClass}>是否可重複</th>
+                <th className={thClass}>回傳型態</th>
+                <th className={thClass}>範例輸出</th>
+                <th className={thClass}>常見陷阱與補充</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={tdClass}>random.randint(a, b)</td>
+                <td className={tdClass}>取一個整數，包含 a 與 b</td>
+                <td className={tdClass}>random.randint(1, 10)</td>
+                <td className={tdClass}>可重複</td>
+                <td className={tdClass}>int</td>
+                <td className={tdClass}>7</td>
+                <td className={tdClass}>包含右邊界；randint(1,1) 會回傳 1</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>random.randrange(a, b)</td>
+                <td className={tdClass}>取整數，不包含 b</td>
+                <td className={tdClass}>random.randrange(1, 10)</td>
+                <td className={tdClass}>可重複</td>
+                <td className={tdClass}>int</td>
+                <td className={tdClass}>5</td>
+                <td className={tdClass}>範圍是 1~9；要含 10 用 randint</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>random.random()</td>
+                <td className={tdClass}>取 0.0~1.0 的浮點數</td>
+                <td className={tdClass}>random.random()</td>
+                <td className={tdClass}>可重複</td>
+                <td className={tdClass}>float</td>
+                <td className={tdClass}>0.4386</td>
+                <td className={tdClass}>沒有參數；常用於機率判斷</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>random.uniform(a, b)</td>
+                <td className={tdClass}>取 a~b 的浮點數</td>
+                <td className={tdClass}>random.uniform(1.5, 3.5)</td>
+                <td className={tdClass}>可重複</td>
+                <td className={tdClass}>float</td>
+                <td className={tdClass}>2.73</td>
+                <td className={tdClass}>常用於隨機速度、位置等實數</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>random.choice(seq)</td>
+                <td className={tdClass}>取單一元素</td>
+                <td className={tdClass}>random.choice(["A","B","C"])</td>
+                <td className={tdClass}>可重複</td>
+                <td className={tdClass}>元素型態</td>
+                <td className={tdClass}>"B"</td>
+                <td className={tdClass}>空序列會報錯</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>random.choices(seq, k=n)</td>
+                <td className={tdClass}>取多個元素（可重複）</td>
+                <td className={tdClass}>random.choices([1,2,3], k=2)</td>
+                <td className={tdClass}>可重複</td>
+                <td className={tdClass}>list</td>
+                <td className={tdClass}>[3, 3]</td>
+                <td className={tdClass}>預設 k=1 也回傳 list</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>random.sample(seq, k=n)</td>
+                <td className={tdClass}>取多個元素（不重複）</td>
+                <td className={tdClass}>random.sample([1,2,3,4], 2)</td>
+                <td className={tdClass}>不可重複</td>
+                <td className={tdClass}>list</td>
+                <td className={tdClass}>[3, 1]</td>
+                <td className={tdClass}>k 大於元素數量會 ValueError</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="operator-priority" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4">運算子優先順序</h2>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th className={thClass}>優先順序</th>
+                <th className={thClass}>運算子</th>
+                <th className={thClass}>說明</th>
+                <th className={thClass}>範例</th>
+                <th className={thClass}>結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className={tdClass}>1</td><td className={tdClass}>()</td><td className={tdClass}>括號最優先</td><td className={tdClass}>2 * (3 + 4)</td><td className={tdClass}>14</td></tr>
+              <tr><td className={tdClass}>2</td><td className={tdClass}>**</td><td className={tdClass}>次方（右結合）</td><td className={tdClass}>2 ** 3 ** 2</td><td className={tdClass}>512</td></tr>
+              <tr><td className={tdClass}>3</td><td className={tdClass}>* / // %</td><td className={tdClass}>乘除整除取餘</td><td className={tdClass}>10 // 3 % 2</td><td className={tdClass}>1</td></tr>
+              <tr><td className={tdClass}>4</td><td className={tdClass}>+ -</td><td className={tdClass}>加減</td><td className={tdClass}>2 + 3 * 4</td><td className={tdClass}>14</td></tr>
+              <tr><td className={tdClass}>5</td><td className={tdClass}>比較運算</td><td className={tdClass}>{"< <= > >= == !="}</td><td className={tdClass}>3 &lt; 5 == True</td><td className={tdClass}>False</td></tr>
+              <tr><td className={tdClass}>6</td><td className={tdClass}>not and or</td><td className={tdClass}>邏輯運算</td><td className={tdClass}>True or False and False</td><td className={tdClass}>True</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="datetime" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-3">
+        <h2 className="text-xl font-semibold">時間格式化（datetime）</h2>
+        <ul className="list-disc pl-6 space-y-1">
+          <li><code>%Y</code> 四位年份</li>
+          <li><code>%m</code> 月份（01-12）</li>
+          <li><code>%d</code> 日期（01-31）</li>
+          <li><code>%H</code> 小時（24 小時制）</li>
+          <li><code>%M</code> 分鐘</li>
+          <li><code>%S</code> 秒數</li>
+        </ul>
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`from datetime import datetime
+now = datetime.now()
+print(now.strftime('%Y/%m/%d'))
+print(now.strftime('%H:%M:%S'))`}
+        </pre>
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section
+          id="format-output"
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4"
+        >
+          <h2 className="text-xl font-semibold">格式化輸出</h2>
+          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`print("今天是 {}，溫度是 {} 度".format("星期三", 28))
+print("{1} 喜歡 {0}".format("Python", "Vincent"))`}
+          </pre>
+          <div className="overflow-x-auto">
+            <table className={tableClass}>
+              <thead>
+                <tr>
+                  <th className={thClass}>功能</th>
+                  <th className={thClass}>格式字串</th>
+                  <th className={thClass}>範例輸出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className={tdClass}>小數 2 位</td>
+                  <td className={tdClass}>{"{:.2f}"}</td>
+                  <td className={tdClass}>3.14</td>
+                </tr>
+                <tr>
+                  <td className={tdClass}>靠左</td>
+                  <td className={tdClass}>{"{:<10}"}</td>
+                  <td className={tdClass}>Hi········</td>
+                </tr>
+                <tr>
+                  <td className={tdClass}>靠右</td>
+                  <td className={tdClass}>{"{:>10}"}</td>
+                  <td className={tdClass}>········Hi</td>
+                </tr>
+                <tr>
+                  <td className={tdClass}>置中</td>
+                  <td className={tdClass}>{"{:^10}"}</td>
+                  <td className={tdClass}>····Hi····</td>
+                </tr>
+                <tr>
+                  <td className={tdClass}>千分位</td>
+                  <td className={tdClass}>{"{:,}"}</td>
+                  <td className={tdClass}>1,234</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="three-format"
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4"
+        >
+          <h2 className="text-xl font-semibold">
+            三種格式化（%, format, f-string）
+          </h2>
+          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`name = "Gemini"
+version = 3.5
+print("Hello %s, version %.1f" % (name, version))
+print("Hello {}, version {}".format(name, version))
+print(f"Hello {name}, version {version}")`}
+          </pre>
+          <p>
+            三種都可輸出：<b>Hello Gemini, version 3.5</b>
+          </p>
+        </section>
+      </div>
+
+      <section id="unittest" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-3">
+        <h2 className="text-xl font-semibold">unittest 標準格式</h2>
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`import unittest
+
+class TestStringMethods(unittest.TestCase):
+    def test_upper(self):
+        self.assertEqual('foo'.upper(), 'FOO')
+
+if __name__ == '__main__':
+    unittest.main()`}
+        </pre>
+      </section>
+
+      <section id="unittest-cli" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4">unittest 命令行選項</h2>
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm mb-4">
+{`python -m unittest myModule.py`}
+        </pre>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead><tr><th className={thClass}>參數</th><th className={thClass}>用途</th></tr></thead>
+            <tbody>
+              <tr><td className={tdClass}>-v</td><td className={tdClass}>顯示每個測試方法（verbose）</td></tr>
+              <tr><td className={tdClass}>-f</td><td className={tdClass}>失敗即停止（failfast）</td></tr>
+              <tr><td className={tdClass}>-c</td><td className={tdClass}>允許 Ctrl+C 中斷並顯示當前錯誤</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="file-open" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4">開檔讀檔（open 模式）</h2>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead><tr><th className={thClass}>模式</th><th className={thClass}>讀寫</th><th className={thClass}>是否清空</th><th className={thClass}>不存在時</th></tr></thead>
+            <tbody>
+              <tr><td className={tdClass}>r</td><td className={tdClass}>讀</td><td className={tdClass}>否</td><td className={tdClass}>報錯</td></tr>
+              <tr><td className={tdClass}>w</td><td className={tdClass}>寫</td><td className={tdClass}>是</td><td className={tdClass}>建立</td></tr>
+              <tr><td className={tdClass}>a</td><td className={tdClass}>寫（追加）</td><td className={tdClass}>否</td><td className={tdClass}>建立</td></tr>
+              <tr><td className={tdClass}>rb / wb / ab</td><td className={tdClass}>二進位讀寫</td><td className={tdClass}>依 w/a</td><td className={tdClass}>依模式</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pydoc" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4">pydoc 讀取模組區塊</h2>
+        <ul className="list-disc pl-6 space-y-1">
+          <li><b>NAME</b>：模組名稱與 docstring 第一行</li>
+          <li><b>DESCRIPTION</b>：docstring 後續內容</li>
+          <li><b>FUNCTIONS</b>：頂層函式與說明</li>
+          <li><b>CLASSES</b>：類別與 methods</li>
+          <li><b>DATA</b>：頂層變數（如 <code>__author__</code>）</li>
+          <li><b>FILE</b>：實際檔案路徑</li>
+        </ul>
+        <pre className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`# ==============================
+#  🧩 NAME & DESCRIPTION 區塊來源
+# ==============================
+"""
+geometry - 幾何計算小工具模組           # ← 第一行 → 會出現在 NAME 區塊標題
+提供面積與周長計算的示範函式與類別。   # ← 從第二行開始 → 會出現在 DESCRIPTION 區塊
+"""
+
+# ==============================
+#  🧩 DATA 區塊來源
+# ==============================
+__author__ = "CodeCat"        # ← 會列在 DATA 區塊
+__version__ = "0.1"           # ← 會列在 DATA 區塊
+PI = 3.14159                  # ← 會列在 DATA 區塊
+
+# ==============================
+#  🧩 FUNCTIONS 區塊來源
+# ==============================
+def circle_area(radius):      # ← 函式名稱與參數會出現在 FUNCTIONS 區塊
+    """回傳半徑為 radius 的圓面積。"""  # ← 這段 docstring 會顯示在 FUNCTIONS 區塊
+    return PI * radius ** 2
+
+
+def rectangle_perimeter(width, height):
+    """
+    計算長方形的周長。              # ← 多行 docstring 全部會出現在 FUNCTIONS 區塊
+
+    Args:
+        width (float): 寬。
+        height (float): 高。
+
+    Returns:
+        float: 長方形的周長。
+    """
+    return 2 * (width + height)
+
+# ==============================
+#  🧩 CLASSES 區塊來源
+# ==============================
+class Square:                  # ← 類別名稱會出現在 CLASSES 區塊
+    """正方形的簡單模型。"""        # ← 類別 docstring 會顯示在 CLASSES 區塊
+
+    def __init__(self, side):
+        """建立一個邊長為 side 的正方形。"""  # ← 方法 docstring 會顯示在 methods 下面
+        self.side = side
+
+    def area(self):
+        """回傳正方形的面積。"""
+        return self.side ** 2
+
+    def perimeter(self):
+        """回傳正方形的周長。"""
+        return 4 * self.side
+
+# ==============================
+#  🧩 FILE 區塊來源
+# ==============================
+# 將此檔案存為 geometry.py，然後在終端機執行：
+#     python -m pydoc geometry
+#
+# pydoc 會在 FILE 區塊顯示這個模組的實際路徑，例如：
+# FILE
+#     C:/path/to/geometry.py`}
+        </pre>
+      </section>
+
+      <section id="errors" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4">error 種類</h2>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead><tr><th className={thClass}>錯誤</th><th className={thClass}>何時發生</th><th className={thClass}>範例</th></tr></thead>
+            <tbody>
+              <tr><td className={tdClass}>AttributeError</td><td className={tdClass}>物件沒有該方法/屬性</td><td className={tdClass}><code>"x".push()</code></td></tr>
+              <tr><td className={tdClass}>TypeError</td><td className={tdClass}>型別不相容</td><td className={tdClass}><code>1 + "2"</code></td></tr>
+              <tr><td className={tdClass}>SyntaxError</td><td className={tdClass}>語法錯誤</td><td className={tdClass}><code>if True</code></td></tr>
+              <tr><td className={tdClass}>IndentationError</td><td className={tdClass}>縮排錯誤</td><td className={tdClass}><code>if True:\nprint("Hi")</code></td></tr>
+              <tr><td className={tdClass}>EOFError</td><td className={tdClass}>輸入串流提前結束</td><td className={tdClass}><code>input()</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="compare" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4">檔案／物件比較概念</h2>
+        <p className="mb-3"><code>==</code> 比值是否相等；<code>is</code> 比是否同一個物件。</p>
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`a = [1, 2, 3]
+b = [1, 2, 3]
+print(a == b)  # True
+print(a is b)  # False`}
+        </pre>
+      </section>
+
+    </div>
+  );
+};
+
+export default ArticleGuide;
