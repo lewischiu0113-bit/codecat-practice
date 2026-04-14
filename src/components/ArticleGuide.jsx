@@ -2,6 +2,8 @@ const sections = [
   { id: "random", title: "Python random 模組對照表總整理" },
   { id: "operator-priority", title: "運算子優先順序" },
   { id: "datetime", title: "時間格式化（datetime）" },
+  { id: "math", title: "Python Math 模組" },
+  { id: "os-path", title: "Python OS 模組與檔案路徑" },
   { id: "format-output", title: "format格式化輸出" },
   { id: "unittest", title: "unittest 標準格式" },
   { id: "unittest-cli", title: "unittest 命令行選項" },
@@ -167,6 +169,164 @@ now = datetime.now()
 print(now.strftime('%Y/%m/%d'))
 print(now.strftime('%H:%M:%S'))`}
         </pre>
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`import datetime
+
+now = datetime.datetime(2025, 12, 25, 14, 30, 0)
+print(now.strftime('%Y/%m/%d'))  # 2025/12/25
+print(now.strftime('%H:%M:%S'))`}
+        </pre>
+      </section>
+
+      <section id="math" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+        <h2 className="text-xl font-semibold">Python Math 模組</h2>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th className={thClass}>函式</th>
+                <th className={thClass}>用途</th>
+                <th className={thClass}>範例</th>
+                <th className={thClass}>結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={tdClass}>math.fsum(iterable)</td>
+                <td className={tdClass}>高精度浮點數加總</td>
+                <td className={tdClass}>math.fsum([.3, .3, .3, .1, .1])</td>
+                <td className={tdClass}>1.1</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>math.ceil(x)</td>
+                <td className={tdClass}>無條件進位</td>
+                <td className={tdClass}>math.ceil(3.1)</td>
+                <td className={tdClass}>4</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>math.floor(x)</td>
+                <td className={tdClass}>無條件捨去（向下取整）</td>
+                <td className={tdClass}>math.floor(3.9)</td>
+                <td className={tdClass}>3</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>math.factorial(n)</td>
+                <td className={tdClass}>計算階乘</td>
+                <td className={tdClass}>math.factorial(5)</td>
+                <td className={tdClass}>120</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>math.sqrt(x)</td>
+                <td className={tdClass}>平方根</td>
+                <td className={tdClass}>math.sqrt(16)</td>
+                <td className={tdClass}>4.0</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>math.fabs(x)</td>
+                <td className={tdClass}>絕對值（回傳 float）</td>
+                <td className={tdClass}>math.fabs(-10.5)</td>
+                <td className={tdClass}>10.5</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>math.pow(x, y)</td>
+                <td className={tdClass}>x 的 y 次方（回傳 float）</td>
+                <td className={tdClass}>math.pow(2, 3)</td>
+                <td className={tdClass}>8.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`import math
+
+my_list = [.3, .3, .3, .1, .1]
+print(math.fsum(my_list))      # 1.1
+print(math.ceil(3.1))          # 4
+print(math.floor(3.9))         # 3
+print(math.factorial(5))       # 120
+print(math.sqrt(16))           # 4.0
+print(math.fabs(-10.5))        # 10.5
+print(math.pow(2, 3))          # 8.0`}
+        </pre>
+      </section>
+
+      <section id="os-path" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+        <h2 className="text-xl font-semibold">Python OS 模組與檔案路徑</h2>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th className={thClass}>函式</th>
+                <th className={thClass}>用途</th>
+                <th className={thClass}>範例</th>
+                <th className={thClass}>說明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={tdClass}>os.getcwd()</td>
+                <td className={tdClass}>取得目前工作目錄</td>
+                <td className={tdClass}>os.getcwd()</td>
+                <td className={tdClass}>回傳目前程式執行所在路徑</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>os.listdir(path)</td>
+                <td className={tdClass}>列出目錄內容</td>
+                <td className={tdClass}>os.listdir(r"C:\\tmp")</td>
+                <td className={tdClass}>回傳指定路徑下的檔案/資料夾清單</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>os.chdir(path)</td>
+                <td className={tdClass}>切換工作目錄</td>
+                <td className={tdClass}>os.chdir(r"C:\\Windows")</td>
+                <td className={tdClass}>變更目前工作路徑</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>os.mkdir(name)</td>
+                <td className={tdClass}>建立資料夾</td>
+                <td className={tdClass}>os.mkdir("data")</td>
+                <td className={tdClass}>建立單層目錄</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>os.path.join(a, b)</td>
+                <td className={tdClass}>合併路徑</td>
+                <td className={tdClass}>os.path.join("data", "report.txt")</td>
+                <td className={tdClass}>自動處理 Windows/Linux 分隔符</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>os.path.exists(path)</td>
+                <td className={tdClass}>檢查是否存在</td>
+                <td className={tdClass}>os.path.exists(r"C:\\config.ini")</td>
+                <td className={tdClass}>存在回傳 True，否則 False</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`import os
+
+# 1) Raw string：避免 \\t 被當成 Tab
+win_path = r'C:\\temp\\new_file.txt'
+print(win_path)
+
+# 2) 目前工作目錄
+print(os.getcwd())
+
+# 3) 切換目錄 + 列出內容
+os.chdir(r'C:\\Windows')
+print(os.listdir('.')[:5])  # 只印前 5 筆
+
+# 4) 跨平台合併路徑
+full_path = os.path.join('data', 'report.txt')
+print(full_path)
+
+# 5) 檢查檔案是否存在
+if os.path.exists(r'C:\\config.ini'):
+    print('檔案存在')
+else:
+    print('檔案找不到')`}
+        </pre>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -282,6 +442,43 @@ if __name__ == '__main__':
               <tr><td className={tdClass}>rb / wb / ab</td><td className={tdClass}>二進位讀寫</td><td className={tdClass}>依 w/a</td><td className={tdClass}>依模式</td></tr>
             </tbody>
           </table>
+        </div>
+        <div className="mt-4 space-y-3">
+          <p className="font-medium">常見範例</p>
+          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`# 1) 讀取整個檔案（r）
+with open('data.txt', 'r', encoding='utf-8') as f:
+    content = f.read()
+print(content)
+
+# 2) 寫入檔案（w，會覆蓋）
+with open('output.txt', 'w', encoding='utf-8') as f:
+    f.write('Hello\\n')
+    f.write('World\\n')
+
+# 3) 追加內容（a，不覆蓋）
+with open('output.txt', 'a', encoding='utf-8') as f:
+    f.write('Append this line\\n')`}
+          </pre>
+
+          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
+{`# 4) 逐行讀取（省記憶體）
+with open('big.txt', 'r', encoding='utf-8') as f:
+    for line in f:
+        print(line.strip())
+
+# 5) readline / readlines
+with open('notes.txt', 'r', encoding='utf-8') as f:
+    first = f.readline()     # 只讀第一行
+    rest = f.readlines()     # 剩下所有行（list）
+print(first)
+print(rest)
+
+# 6) 讀取二進位檔（圖片）
+with open('photo.jpg', 'rb') as f:
+    header = f.read(16)
+print(header)`}
+          </pre>
         </div>
       </section>
 

@@ -361,7 +361,7 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 (23, 'MCQ', E'在命令列執行 python -m pydoc myModule 時，pydoc 會優先在哪裡尋找 myModule？', '["只在標準函式庫中尋找", "只在 site-packages 中尋找", "先在目前執行命令的目錄中尋找對應模組或資料夾", "永遠從網路下載文件"]'::jsonb, '先在目前執行命令的目錄中尋找對應模組或資料夾', '執行目錄會被放在 sys.path 前面，因此會先找當前目錄下的模組。', 16),
 (23, 'MCQ', E'當你執行 python -m pydoc -p 9898 時，會發生什麼事？', '["只是在終端機印出說明文件", "產生一個靜態 HTML 檔並輸出到 Example.html", "啟動一個在 9898 埠上的 pydoc 網頁伺服器", "關閉所有舊的 pydoc 伺服器"]'::jsonb, '啟動一個在 9898 埠上的 pydoc 網頁伺服器', '-p 參數會啟動一個 HTTP server，讓你用瀏覽器瀏覽文件。', 17),
 (23, 'MCQ', E'關於 sys.argv，下列哪個說法正確？\n\n假設執行：\n```bash\npython program.py Alice 85 90 95\n```', '["sys.argv[0] 是 Alice", "sys.argv[1:] 只會包含成績，不含姓名", "成績個數可以用 len(sys.argv) - 2 計算", "sys.argv 只在互動模式中存在"]'::jsonb, '成績個數可以用 len(sys.argv) - 2 計算', 'argv[0] 是程式檔案名稱，argv[1] 是姓名，其餘才是成績，因此是總長度減去 2。', 18),
-(23, 'MCQ', E'下列哪一個是正確使用 os.chdir() 切換到 Windows 目錄 C:\\tmp 的寫法？', '["os.chdir(''c:\\tmp'')", "os.chdir(\"c:\\tmp\")", "os.chdir(r''c:\\tmp'')", "os.chdir(''/c/tmp'')"]'::jsonb, 'os.chdir(r''c:\\tmp'')', '在一般字串中 \\t 會被當成跳脫字元 Tab，因此要用 raw string r''c:\\tmp'' 才安全。', 19),
+(23, 'MCQ', E'下列哪一個是正確使用 os.chdir() 切換到 Windows 目錄 C:\\tmp 的寫法？', '["os.chdir(''c:\\tmp'')", "os.chdir(\"c:\\tmp\")", "os.chdir(r''c:\\tmp'')", "os.chdir(''/c/tmp'')"]'::jsonb, 'os.chdir(r''c:\tmp'')', '因為在一般字串中反斜線 \\ 是跳脫字元，像 \\t 會被解讀成 Tab；加上 r 變成 raw string（r''c:\\tmp''）後，路徑會按原樣處理，不會被錯誤轉義。', 19),
 (23, 'MCQ', E'若有 measurements 這個浮點數清單，要將每個數字格式化為兩位小數並用逗號加空格串接，哪一段程式最適合？', '["print(\", \".join(str(f) for f in measurements))", "print(\", \".join(\"%.2f\" % f for f in measurements))", "print(\"%.2f\" % measurements)", "print(measurements.join(\", \"))"]'::jsonb, 'print(", ".join("%.2f" % f for f in measurements))', '舊式格式化 %.2f 可控制到兩位小數，再用 join 連接字串。', 20);
 
 -- 插入問題資料 - 考試 7 (考古題 卷二：千喬)
@@ -373,7 +373,7 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 (24, 'MCQ', E'若 t 是一個長字串，t.find("will") 與 t.rfind("will") 差別為何？', '["find 與 rfind 完全一樣", "find 從左到右找第一次出現位置，rfind 從右到左找最後一次出現位置", "find 找子字串長度，rfind 找子字串個數", "rfind 只能用在 list 不適用字串"]'::jsonb, 'find 從左到右找第一次出現位置，rfind 從右到左找最後一次出現位置', 'find 回傳第一個匹配的位置，rfind 回傳最後一個匹配的位置。', 5),
 (24, 'MCQ', E'在 for 迴圈中使用 continue 的主要效果是什麼？', '["結束整個迴圈", "結束程式", "跳過本次迭代剩餘程式碼，直接進入下一輪", "重新從第一輪開始迴圈"]'::jsonb, '跳過本次迭代剩餘程式碼，直接進入下一輪', 'continue 會略過後續程式碼，只進入下一次迭代。', 6),
 (24, 'MCQ', E'關於下列程式，哪個選項最貼近題目說明「略過在 items 中的數字，不要加總它們」？\n\n```python\nfor e in elements:\n    if e in items:\n        ____\n    count += e\n```', '["break", "continue", "pass", "return"]'::jsonb, 'continue', '當 e 在 items 中時用 continue，可跳過當次的 count += e。', 7),
-(24, 'MCQ', E'若某行程式碼被 # 註解掉，例如 # my_list.sort()，會有什麼影響？', '["程式仍然會執行 sort()", "該行不會執行，因此資料順序不會被更動", "註解只影響顯示，不影響執行結果", "Python 會拋出 SyntaxError"]'::jsonb, '該行不會執行，因此資料順序不會被更動', '# 開頭代表該行是註解，不會被直譯器執行。', 8),
+(24, 'MCQ', E'若某行程式碼被 # 註解掉，例如 # my_list.sort()，會有什麼影響？', '["程式仍然會執行 sort()", "該行是註解不會執行，my_list 也就不會被排序", "註解會讓後面整個檔案都不執行", "Python 會拋出 SyntaxError"]'::jsonb, '該行是註解不會執行，my_list 也就不會被排序', '# 開頭代表該行是註解，直譯器會直接略過；因此 my_list.sort() 不會執行，原本順序會維持不變。', 8),
 (24, 'MCQ', E'在 pydoc 的輸出中，模組頂層的變數（例如 __author__、__copyright__）通常會出現在：
 哪一個區塊？', '["NAME", "DESCRIPTION", "FUNCTIONS", "DATA"]'::jsonb, 'DATA', '模組層級的變數會被列在 DATA 區塊中。', 9),
 (24, 'MCQ', E'在 Python 互動環境中要查看 Example1 模組的說明，正確步驟為何？', '["直接輸入 help(Example1) 就好，無須 import", "先 import Example1，再呼叫 help(Example1)", "呼叫 Example1.help()", "請改用 python -m pydoc Example1，help() 無法用於模組"]'::jsonb, '先 import Example1，再呼叫 help(Example1)', 'help() 需要已載入的物件，因此要先 import 模組。', 10),
