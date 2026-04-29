@@ -566,6 +566,8 @@ class Square:                  # ← 類別名稱會出現在 CLASSES 區塊
             <thead><tr><th className={thClass}>錯誤</th><th className={thClass}>何時發生</th><th className={thClass}>範例</th></tr></thead>
             <tbody>
               <tr><td className={tdClass}>AttributeError</td><td className={tdClass}>物件沒有該方法/屬性</td><td className={tdClass}><code>"x".push()</code></td></tr>
+              <tr><td className={tdClass}>KeyError</td><td className={tdClass}>字典中找不到指定 key</td><td className={tdClass}><code>{'{"a": 1}["b"]'}</code></td></tr>
+              <tr><td className={tdClass}>NameError</td><td className={tdClass}>使用了未定義的變數名稱</td><td className={tdClass}><code>print(undefined_var)</code></td></tr>
               <tr><td className={tdClass}>TypeError</td><td className={tdClass}>型別不相容</td><td className={tdClass}><code>1 + "2"</code></td></tr>
               <tr><td className={tdClass}>SyntaxError</td><td className={tdClass}>語法錯誤</td><td className={tdClass}><code>if True</code></td></tr>
               <tr><td className={tdClass}>IndentationError</td><td className={tdClass}>縮排錯誤</td><td className={tdClass}><code>if True:\nprint("Hi")</code></td></tr>

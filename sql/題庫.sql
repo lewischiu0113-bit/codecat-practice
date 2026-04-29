@@ -1,7 +1,7 @@
 -- ============================================
 -- CodeCat Practice 完整資料庫重構腳本
 -- 整合：初階題目 + 中階題目 + 高階手寫題
--- 總計：25 個考試單元
+-- 總計：26 個考試單元
 -- ============================================
 
 -- 步驟 1: 清除所有現有資料與重置 ID
@@ -49,7 +49,8 @@ INSERT INTO exams (id, title, difficulty, description) VALUES
 (22, 'Python 高階綜合實作', '高級', '綜合練習 Python 高階程式設計'),
 (23, '考古題（卷一）', '高級', '考古題（卷一）'),
 (24, '考古題（卷二）', '高級', '考古題（卷二）'),
-(25, 'Python 字串格式化三大寫法（初階）', '初級', '練習 % 運算子、str.format() 與 f-string 的基礎選擇題');
+(25, 'Python 字串格式化三大寫法（初階）', '初級', '練習 % 運算子、str.format() 與 f-string 的基礎選擇題'),
+(26, 'Python pydoc 區塊辨識（初階）', '初級', '熟悉 pydoc 的 NAME、DESCRIPTION、FUNCTIONS、CLASSES、DATA、FILE 各區塊代表內容');
 
 -- ============================================
 -- 步驟 3: 插入初階題目 (映射舊資料到新 ID)
@@ -97,20 +98,25 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 
 -- 新 ID 4: 錯誤類型 (來源: 舊 ID 7)
 INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nx = "hello"\nx.push()\n```', '["AttributeError", "TypeError", "NameError", "SyntaxError"]'::jsonb, 'AttributeError', '物件沒有你呼叫的方法或屬性時會發生 AttributeError。字串沒有 push() 方法', 1),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nf = open(''numbers.txt'')\nf.readall()\n```', '["AttributeError", "EOFError", "SystemError", "SyntaxError"]'::jsonb, 'AttributeError', '檔案物件沒有 readall() 方法，正確的方法是 read()，所以會拋出 AttributeError', 2),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nprint(undefined_var)\n```', '["NameError", "AttributeError", "TypeError", "SyntaxError"]'::jsonb, 'NameError', '當使用未定義的變數時會拋出 NameError', 3),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\n1 + "2"\n```', '["TypeError", "ValueError", "AttributeError", "SyntaxError"]'::jsonb, 'TypeError', '型別不合的操作會拋出 TypeError。整數和字串無法直接相加', 4),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nif True\n    print("Hi")\n```', '["SyntaxError", "IndentationError", "TypeError", "NameError"]'::jsonb, 'SyntaxError', '程式碼語法錯誤會在執行前被偵測到，拋出 SyntaxError。if 語句缺少冒號', 5),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nif True:\nprint("Hi")\n```', '["IndentationError", "SyntaxError", "TypeError", "NameError"]'::jsonb, 'IndentationError', '縮排不合法會拋出 IndentationError。print 語句應該要縮排', 6),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\n1 / 0\n```', '["ZeroDivisionError", "ArithmeticError", "ValueError", "TypeError"]'::jsonb, 'ZeroDivisionError', '除以零會拋出 ZeroDivisionError，這是 ArithmeticError 的子類別', 7),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\ntry:\n    result = 10 / 0\nexcept Exception:\n    pass\n```', '["不會拋出錯誤", "ZeroDivisionError", "ArithmeticError", "Exception"]'::jsonb, '不會拋出錯誤', 'Exception 是所有例外的基底類別，可以捕捉所有錯誤，所以錯誤被捕捉後不會再拋出', 8),
-(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nnumbers = [1, 2, 3]\nnumbers.append(4)\nnumbers.push(5)\n```', '["AttributeError", "TypeError", "NameError", "IndexError"]'::jsonb, 'AttributeError', '列表沒有 push() 方法，正確的方法是 append()，所以會拋出 AttributeError', 9),
-(4, 'MCQ', E'以下哪個錯誤類型是數學運算錯誤的基底類別？', '["ArithmeticError", "MathError", "ValueError", "TypeError"]'::jsonb, 'ArithmeticError', 'ArithmeticError 是數學運算錯誤的基底類別，ZeroDivisionError 是它的子類別', 10),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nx = "hello"\nx.push()\n```', '["TypeError", "AttributeError", "NameError", "SyntaxError"]'::jsonb, 'AttributeError', '物件沒有你呼叫的方法或屬性時會發生 AttributeError。字串沒有 push() 方法', 1),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nf = open(''numbers.txt'')\nf.readall()\n```', '["EOFError", "SystemError", "AttributeError", "SyntaxError"]'::jsonb, 'AttributeError', '檔案物件沒有 readall() 方法，正確的方法是 read()，所以會拋出 AttributeError', 2),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nprint(undefined_var)\n```', '["AttributeError", "TypeError", "NameError", "SyntaxError"]'::jsonb, 'NameError', '當使用未定義的變數時會拋出 NameError', 3),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\n1 + "2"\n```', '["ValueError", "TypeError", "AttributeError", "SyntaxError"]'::jsonb, 'TypeError', '型別不合的操作會拋出 TypeError。整數和字串無法直接相加', 4),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nif True\n    print("Hi")\n```', '["IndentationError", "TypeError", "NameError", "SyntaxError"]'::jsonb, 'SyntaxError', '程式碼語法錯誤會在執行前被偵測到，拋出 SyntaxError。if 語句缺少冒號', 5),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nif True:\nprint("Hi")\n```', '["SyntaxError", "TypeError", "NameError", "IndentationError"]'::jsonb, 'IndentationError', '縮排不合法會拋出 IndentationError。print 語句應該要縮排', 6),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\n1 / 0\n```', '["ArithmeticError", "ValueError", "TypeError", "ZeroDivisionError"]'::jsonb, 'ZeroDivisionError', '除以零會拋出 ZeroDivisionError，這是 ArithmeticError 的子類別', 7),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\ntry:\n    result = 10 / 0\nexcept Exception:\n    pass\n```', '["ZeroDivisionError", "ArithmeticError", "不會拋出錯誤", "Exception"]'::jsonb, '不會拋出錯誤', 'Exception 是所有例外的基底類別，可以捕捉所有錯誤，所以錯誤被捕捉後不會再拋出', 8),
+(4, 'MCQ', E'以下程式碼會拋出哪種錯誤？\n\n```python\nnumbers = [1, 2, 3]\nnumbers.append(4)\nnumbers.push(5)\n```', '["TypeError", "NameError", "IndexError", "AttributeError"]'::jsonb, 'AttributeError', '列表沒有 push() 方法，正確的方法是 append()，所以會拋出 AttributeError', 9),
+(4, 'MCQ', E'以下哪個錯誤類型是數學運算錯誤的基底類別？', '["MathError", "ArithmeticError", "ValueError", "TypeError"]'::jsonb, 'ArithmeticError', 'ArithmeticError 是數學運算錯誤的基底類別，ZeroDivisionError 是它的子類別', 10),
 (4, 'Input', E'請完成以下程式碼：\n\n```python\ntry:\n    x = "hello"\n    x.push()\nexcept _______:\n    print("屬性錯誤")\n```', NULL, 'AttributeError', '使用 except AttributeError: 來捕捉屬性錯誤', 11),
 (4, 'Input', E'請完成以下程式碼：\n\n```python\ntry:\n    print(undefined_var)\nexcept _______:\n    print("變數未定義")\n```', NULL, 'NameError', '使用 except NameError: 來捕捉變數未定義的錯誤', 12),
 (4, 'Input', E'請完成以下程式碼：\n\n```python\ntry:\n    result = 1 + "2"\nexcept _______:\n    print("型別錯誤")\n```', NULL, 'TypeError', '使用 except TypeError: 來捕捉型別不合的操作錯誤', 13),
-(4, 'Input', E'請完成以下程式碼，捕捉所有錯誤：\n\n```python\ntry:\n    result = 10 / 0\nexcept _______:\n    print("發生錯誤")\n```', NULL, 'Exception', '使用 except Exception: 可以捕捉所有錯誤（除了系統退出相關的錯誤）', 14);
+(4, 'Input', E'請完成以下程式碼，捕捉所有錯誤：\n\n```python\ntry:\n    result = 10 / 0\nexcept _______:\n    print("發生錯誤")\n```', NULL, 'Exception', '使用 except Exception: 可以捕捉所有錯誤（除了系統退出相關的錯誤）', 14),
+(4, 'MCQ', E'下列哪段程式會拋出 ValueError？\n\n```python\nint("abc")\n```', '["int(\"abc\")", "print(not_defined)", "1 + \"2\"", "x = []; x.push(1)"]'::jsonb, 'int("abc")', '把無法轉成整數的字串丟進 int() 會拋出 ValueError。', 15),
+(4, 'MCQ', E'關於 except 區塊順序，下列哪個寫法比較正確？\n\n```python\ntry:\n    x = 1 / 0\nexcept ZeroDivisionError:\n    print("division by zero")\nexcept Exception:\n    print("other error")\n```', '["先寫 except Exception 再寫 except ZeroDivisionError", "先寫 except ZeroDivisionError 再寫 except Exception", "只能寫一個 except", "except 順序不影響執行"]'::jsonb, '先寫 except ZeroDivisionError 再寫 except Exception', '應先捕捉較具體的錯誤，再捕捉較廣泛的 Exception。', 16),
+(4, 'MCQ', E'執行下列程式會發生什麼？\n\n```python\nmy_list = [10, 20]\nprint(my_list[5])\n```', '["TypeError", "ValueError", "KeyError", "IndexError"]'::jsonb, 'IndexError', 'list 索引超出範圍會拋出 IndexError。', 17),
+(4, 'MCQ', E'下列哪個錯誤通常代表「字典中查不到指定 key」？\n\n```python\nd = {"a": 1}\nprint(d["b"])\n```', '["AttributeError", "KeyError", "NameError", "ImportError"]'::jsonb, 'KeyError', '對 dict 存取不存在的鍵時，會拋出 KeyError。', 18),
+(4, 'MCQ', E'關於 `except Exception as e:` 中的 e，下列敘述何者正確？', '["e 一定是字串", "e 是錯誤物件，可用來查看錯誤訊息", "e 只能在 except 外使用", "e 只能用於 SyntaxError"]'::jsonb, 'e 是錯誤物件，可用來查看錯誤訊息', 'e 代表捕捉到的例外實例，常用 `print(e)` 觀察訊息。', 19);
 
 -- 新 ID 5: Math 模組 (來源: 舊 ID 8)
 INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
@@ -411,4 +417,22 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
 (25, 'MCQ', E'若 `name = "Gemini"`，以下哪一行會得到 `Hello Gemini`？', '["print(f\"Hello {name}\")", "print(\"Hello {name}\")", "print(\"Hello %d\" % name)", "print(\"Hello\" + 1)"]'::jsonb, 'print(f"Hello {name}")', '`"Hello {name}"` 若沒有 f 或 format 不會插值。', 19),
 (25, 'MCQ', E'總結三種格式化：`%`、`.format()`、f-string，下列何者正確？', '["三者都屬於 Python 合法且常見的字串格式化方式", "只有 `%` 是合法語法", "`.format()` 已被 Python 移除", "f-string 只能在 Python 2 使用"]'::jsonb, '三者都屬於 Python 合法且常見的字串格式化方式', '三種都是合法做法；實務上常見 f-string 與 format。', 20);
 
-SELECT '考試資料重構完成！共 25 個考試單元已建立。' AS message;
+-- 新 ID 26: Python pydoc 區塊辨識（初階）
+INSERT INTO questions (exam_id, type, question, options, correct_answer, explanation, question_order) VALUES
+(26, 'MCQ', E'在 python -m pydoc geometry 的輸出中，NAME 區塊主要對應哪一項？', '["模組名稱 + 模組 docstring 第一行", "所有函式清單", "所有類別與方法", "模組檔案完整路徑"]'::jsonb, '模組名稱 + 模組 docstring 第一行', 'NAME 通常顯示「模組名 - docstring 第一行摘要」。', 1),
+(26, 'MCQ', E'DESCRIPTION 區塊最主要是從哪裡來的？', '["函式內部註解", "模組 docstring 第二行開始的內容", "所有全域變數名稱", "import 清單"]'::jsonb, '模組 docstring 第二行開始的內容', 'DESCRIPTION 會承接模組 docstring 的後續說明。', 2),
+(26, 'MCQ', E'FUNCTIONS 區塊會列出下列哪一類內容？', '["只有 class method", "模組頂層 def 與其 docstring", "只列出常數值", "只列出作者資訊"]'::jsonb, '模組頂層 def 與其 docstring', 'FUNCTIONS 針對模組層級函式（非類別方法）。', 3),
+(26, 'MCQ', E'CLASSES 區塊通常會包含什麼？', '["模組路徑與版本", "類別名稱、類別 docstring 與 methods 資訊", "所有 if/for 語句", "只顯示 __name__"]'::jsonb, '類別名稱、類別 docstring 與 methods 資訊', 'CLASSES 會整理模組中的類別與其方法說明。', 4),
+(26, 'MCQ', E'DATA 區塊最可能看到哪種內容？', '["__author__ = \"CodeCat\" 這類頂層變數", "函式參數型別", "測試結果摘要", "路徑分隔符設定"]'::jsonb, '__author__ = "CodeCat" 這類頂層變數', 'DATA 會列出模組層級變數，例如 PI、__version__。', 5),
+(26, 'MCQ', E'FILE 區塊顯示的重點是什麼？', '["目前 Python 版本", "模組實際檔案路徑", "函式回傳值", "模組安裝指令"]'::jsonb, '模組實際檔案路徑', 'FILE 區塊用來告訴你文件對應到哪個實體檔案。', 6),
+(26, 'MCQ', E'若模組 docstring 只有一行，關於 NAME 與 DESCRIPTION 的敘述何者正確？', '["兩者都一定空白", "DESCRIPTION 可能很少內容，甚至與 NAME 重複感很高", "NAME 會消失", "一定拋出 SyntaxError"]'::jsonb, 'DESCRIPTION 可能很少內容，甚至與 NAME 重複感很高', '因為 DESCRIPTION 來自第二行之後；只有一行時可用內容有限。', 7),
+(26, 'MCQ', E'下列哪一項最可能出現在 FUNCTIONS 區塊？', '["add(a, b)", "__version__ = \"1.0\"", "class Counter:", "C:/path/to/geometry.py"]'::jsonb, 'add(a, b)', 'add(a, b) 是函式簽章，屬於 FUNCTIONS。', 8),
+(26, 'MCQ', E'下列哪一項最可能出現在 CLASSES 區塊？', '["PI = 3.14159", "Square 與其 area()、perimeter() 方法", "python -m pydoc geometry 指令", "os.path.join"]'::jsonb, 'Square 與其 area()、perimeter() 方法', '類別本體與 methods 會被歸在 CLASSES。', 9),
+(26, 'MCQ', E'下列哪一項最可能出現在 DATA 區塊？', '["def rectangle_perimeter(width, height):", "__author__ = \"Ada\"", "class Square:", "FILE"]'::jsonb, '__author__ = "Ada"', '作者、版本、常數等頂層變數會列在 DATA。', 10),
+(26, 'MCQ', E'想知道 pydoc 目前在說明哪個實際檔案，應優先看哪個區塊？', '["NAME", "FUNCTIONS", "FILE", "DESCRIPTION"]'::jsonb, 'FILE', '要定位實體檔案就看 FILE。', 11),
+(26, 'MCQ', E'下列哪個敘述最正確？', '["FUNCTIONS 會列出模組中的頂層函式，不含 class method", "DATA 只會列出函式名稱", "NAME 只顯示檔案路徑", "CLASSES 只顯示 import 清單"]'::jsonb, 'FUNCTIONS 會列出模組中的頂層函式，不含 class method', 'class method 會歸在 CLASSES 內的對應類別之下。', 12),
+(26, 'MCQ', E'若看到 PI = 3.14159、__version__ = \"0.1\" 這些資訊，最可能是從哪個區塊讀到的？', '["DESCRIPTION", "DATA", "FILE", "NAME"]'::jsonb, 'DATA', '這些都是模組層級變數，屬 DATA。', 13),
+(26, 'MCQ', E'下列哪一題屬於在考「區塊對應」觀念？', '["NAME 對應模組名與 docstring 第一行", "math.ceil(3.1) 會回傳多少", "for 迴圈怎麼寫", "list.sort() 是否原地排序"]'::jsonb, 'NAME 對應模組名與 docstring 第一行', '本考試重點是 pydoc 區塊辨識，而不是一般語法計算。', 14),
+(26, 'MCQ', E'在 python -m pydoc geometry 中，如果你要快速看有哪些可直接呼叫的模組函式，應先看哪個區塊？', '["FUNCTIONS", "DATA", "FILE", "NAME"]'::jsonb, 'FUNCTIONS', '可呼叫的模組層級函式會集中在 FUNCTIONS。', 15);
+
+SELECT '考試資料重構完成！共 26 個考試單元已建立。' AS message;
