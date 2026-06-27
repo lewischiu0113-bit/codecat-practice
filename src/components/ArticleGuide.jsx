@@ -14,37 +14,65 @@ const sections = [
   { id: "three-format", title: "三種格式化（%, format, f-string）" },
 ];
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
 const tableClass =
-  "min-w-full border-collapse border border-gray-300 text-sm text-left";
-const thClass = "border border-gray-300 bg-gray-50 px-3 py-2 font-semibold";
-const tdClass = "border border-gray-300 px-3 py-2 align-top";
+  "min-w-full text-xs sm:text-sm text-left border-collapse";
+const thClass = "border-b-2 border-gray-300 bg-orange-50/50 px-3 py-1.5 font-semibold text-gray-800 text-xs sm:text-sm select-none";
+const tdClass = "border-b border-gray-200 px-3 py-1.5 align-top text-gray-600 text-xs sm:text-sm";
+
+const GuideCodeBlock = ({ children, language = 'python' }) => {
+  const handleCopyPrevent = (e) => {
+    e.preventDefault();
+    alert('為了學習成效，本頁面的範例程式碼禁止複製貼上，請手動練習輸入！');
+  };
+
+  return (
+    <div onCopy={handleCopyPrevent} className="my-3 select-none">
+      <SyntaxHighlighter
+        style={oneDark}
+        language={language}
+        PreTag="div"
+        className="rounded-xl border border-gray-800 shadow-sm"
+        customStyle={{
+          margin: 0,
+          borderRadius: '0.75rem',
+          fontSize: '0.8125rem',
+        }}
+      >
+        {String(children).replace(/\n$/, '')}
+      </SyntaxHighlighter>
+    </div>
+  );
+};
 
 const ArticleGuide = () => {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 text-gray-800">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h1 className="text-2xl font-bold mb-2">Python 靜態教學文章</h1>
+      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6">
+        <h1 className="text-2xl font-bold mb-2 text-gray-800">Python 重點整理</h1>
         <p className="text-gray-600">
-          這頁提供可讀性高的教學內容，含表格、程式碼、重點整理，並可透過目錄快速跳轉章節。
+          考題重點整理，可透過目錄快速跳轉章節。
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold mb-3">目錄</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">目錄快速導覽</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="text-primary hover:underline"
+              className="text-gray-700 hover:text-primary bg-white/40 hover:bg-orange-50/50 border border-gray-200/50 px-3 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow hover:-translate-y-0.5"
             >
-              - {section.title}
+              # {section.title}
             </a>
           ))}
         </div>
       </div>
 
-      <section id="random" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      <section id="random" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-4 scroll-mt-8">
         <h2 className="text-xl font-semibold">Python random 模組對照表總整理</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -128,7 +156,7 @@ const ArticleGuide = () => {
         </div>
       </section>
 
-      <section id="operator-priority" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <section id="operator-priority" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
         <h2 className="text-xl font-semibold mb-4">運算子優先順序</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -153,7 +181,7 @@ const ArticleGuide = () => {
         </div>
       </section>
 
-      <section id="datetime" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-3">
+      <section id="datetime" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-3 scroll-mt-8">
         <h2 className="text-xl font-semibold">時間格式化（datetime）</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -174,7 +202,7 @@ const ArticleGuide = () => {
                 <td className={tdClass}><code>%m</code></td>
                 <td className={tdClass}>月份（01-12）</td>
                 <td className={tdClass}>
-                  <code>%B</code>（英文月份全稱，例如：December）<br/>
+                  <code>%B</code>（英文月份全稱，例如：December）<br />
                   <code>%b</code>（英文月份簡稱，例如：Dec）
                 </td>
               </tr>
@@ -187,7 +215,7 @@ const ArticleGuide = () => {
                 <td className={tdClass}><code>%H</code></td>
                 <td className={tdClass}>小時（24 小時制，00-23）</td>
                 <td className={tdClass}>
-                  <code>%I</code>（12 小時制，01-12）<br/>
+                  <code>%I</code>（12 小時制，01-12）<br />
                   <code>%p</code>（AM / PM 標記）
                 </td>
               </tr>
@@ -205,30 +233,30 @@ const ArticleGuide = () => {
                 <td className={tdClass}>星期（補充）</td>
                 <td className={tdClass}>星期相關格式化</td>
                 <td className={tdClass}>
-                  <code>%A</code>（星期英文全稱，例如：Monday）<br/>
-                  <code>%a</code>（星期英文簡稱，例如：Mon）<br/>
+                  <code>%A</code>（星期英文全稱，例如：Monday）<br />
+                  <code>%a</code>（星期英文簡稱，例如：Mon）<br />
                   <code>%w</code>（星期數字 0-6，0 代表星期日）
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`from datetime import datetime
+        <GuideCodeBlock>
+          {`from datetime import datetime
 now = datetime.now()
 print(now.strftime('%Y/%m/%d'))
 print(now.strftime('%H:%M:%S'))`}
-        </pre>
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`import datetime
+        </GuideCodeBlock>
+        <GuideCodeBlock>
+          {`import datetime
 
 now = datetime.datetime(2025, 12, 25, 14, 30, 0)
 print(now.strftime('%Y/%m/%d'))  # 2025/12/25
 print(now.strftime('%H:%M:%S'))`}
-        </pre>
+        </GuideCodeBlock>
       </section>
 
-      <section id="math" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      <section id="math" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-4 scroll-mt-8">
         <h2 className="text-xl font-semibold">Python Math 模組</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -286,8 +314,8 @@ print(now.strftime('%H:%M:%S'))`}
             </tbody>
           </table>
         </div>
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`import math
+        <GuideCodeBlock>
+          {`import math
 
 my_list = [.3, .3, .3, .1, .1]
 print(math.fsum(my_list))      # 1.1
@@ -297,10 +325,10 @@ print(math.factorial(5))       # 120
 print(math.sqrt(16))           # 4.0
 print(math.fabs(-10.5))        # 10.5
 print(math.pow(2, 3))          # 8.0`}
-        </pre>
+        </GuideCodeBlock>
       </section>
 
-      <section id="os-path" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      <section id="os-path" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-4 scroll-mt-8">
         <h2 className="text-xl font-semibold">Python OS 模組與檔案路徑</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -353,8 +381,8 @@ print(math.pow(2, 3))          # 8.0`}
           </table>
         </div>
 
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`import os
+        <GuideCodeBlock>
+          {`import os
 
 # 1) Raw string：避免 \\t 被當成 Tab
 win_path = r'C:\\temp\\new_file.txt'
@@ -376,19 +404,19 @@ if os.path.exists(r'C:\\config.ini'):
     print('檔案存在')
 else:
     print('檔案找不到')`}
-        </pre>
+        </GuideCodeBlock>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section
           id="format-output"
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4"
+          className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-4"
         >
           <h2 className="text-xl font-semibold">格式化輸出</h2>
-          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`print("今天是 {}，溫度是 {} 度".format("星期三", 28))
+          <GuideCodeBlock>
+            {`print("今天是 {}，溫度是 {} 度".format("星期三", 28))
 print("{1} 喜歡 {0}".format("Python", "Vincent"))`}
-          </pre>
+          </GuideCodeBlock>
           <div className="overflow-x-auto">
             <table className={tableClass}>
               <thead>
@@ -431,28 +459,28 @@ print("{1} 喜歡 {0}".format("Python", "Vincent"))`}
 
         <section
           id="three-format"
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4"
+          className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-4"
         >
           <h2 className="text-xl font-semibold">
             三種格式化（%, format, f-string）
           </h2>
-          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`name = "Gemini"
+          <GuideCodeBlock>
+            {`name = "Gemini"
 version = 3.5
 print("Hello %s, version %.1f" % (name, version))
 print("Hello {}, version {}".format(name, version))
 print(f"Hello {name}, version {version}")`}
-          </pre>
+          </GuideCodeBlock>
           <p>
             三種都可輸出：<b>Hello Gemini, version 3.5</b>
           </p>
         </section>
       </div>
 
-      <section id="unittest" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-3">
+      <section id="unittest" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 space-y-3 scroll-mt-8">
         <h2 className="text-xl font-semibold">unittest 標準格式</h2>
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`import unittest
+        <GuideCodeBlock>
+          {`import unittest
 
 class TestStringMethods(unittest.TestCase):
     def test_upper(self):
@@ -460,14 +488,14 @@ class TestStringMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()`}
-        </pre>
+        </GuideCodeBlock>
       </section>
 
-      <section id="unittest-cli" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <section id="unittest-cli" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
         <h2 className="text-xl font-semibold mb-4">unittest 命令行選項</h2>
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm mb-4">
-{`python -m unittest myModule.py`}
-        </pre>
+        <GuideCodeBlock language="bash">
+          {`python -m unittest myModule.py`}
+        </GuideCodeBlock>
         <div className="overflow-x-auto">
           <table className={tableClass}>
             <thead><tr><th className={thClass}>參數</th><th className={thClass}>用途</th></tr></thead>
@@ -480,7 +508,7 @@ if __name__ == '__main__':
         </div>
       </section>
 
-      <section id="file-open" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <section id="file-open" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
         <h2 className="text-xl font-semibold mb-4">開檔讀檔（open 模式）</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -495,8 +523,8 @@ if __name__ == '__main__':
         </div>
         <div className="mt-4 space-y-3">
           <p className="font-medium">常見範例</p>
-          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`# 1) 讀取整個檔案（r）
+          <GuideCodeBlock>
+            {`# 1) 讀取整個檔案（r）
 with open('data.txt', 'r', encoding='utf-8') as f:
     content = f.read()
 print(content)
@@ -509,10 +537,10 @@ with open('output.txt', 'w', encoding='utf-8') as f:
 # 3) 追加內容（a，不覆蓋）
 with open('output.txt', 'a', encoding='utf-8') as f:
     f.write('Append this line\\n')`}
-          </pre>
+          </GuideCodeBlock>
 
-          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`# 4) 逐行讀取（省記憶體）
+          <GuideCodeBlock>
+            {`# 4) 逐行讀取（省記憶體）
 with open('big.txt', 'r', encoding='utf-8') as f:
     for line in f:
         print(line.strip())
@@ -528,11 +556,11 @@ print(rest)
 with open('photo.jpg', 'rb') as f:
     header = f.read(16)
 print(header)`}
-          </pre>
+          </GuideCodeBlock>
         </div>
       </section>
 
-      <section id="pydoc" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <section id="pydoc" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
         <h2 className="text-xl font-semibold mb-4">pydoc 讀取模組區塊</h2>
         <ul className="list-disc pl-6 space-y-1">
           <li><b>NAME</b>：模組名稱與 docstring 第一行</li>
@@ -542,8 +570,8 @@ print(header)`}
           <li><b>DATA</b>：頂層變數（如 <code>__author__</code>）</li>
           <li><b>FILE</b>：實際檔案路徑</li>
         </ul>
-        <pre className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`# ==============================
+        <GuideCodeBlock>
+          {`# ==============================
 #  🧩 NAME & DESCRIPTION 區塊來源
 # ==============================
 """
@@ -606,10 +634,10 @@ class Square:                  # ← 類別名稱會出現在 CLASSES 區塊
 # pydoc 會在 FILE 區塊顯示這個模組的實際路徑，例如：
 # FILE
 #     C:/path/to/geometry.py`}
-        </pre>
+        </GuideCodeBlock>
       </section>
 
-      <section id="errors" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <section id="errors" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
         <h2 className="text-xl font-semibold mb-4">error 種類</h2>
         <div className="overflow-x-auto">
           <table className={tableClass}>
@@ -629,15 +657,15 @@ class Square:                  # ← 類別名稱會出現在 CLASSES 區塊
         </div>
       </section>
 
-      <section id="compare" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <section id="compare" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
         <h2 className="text-xl font-semibold mb-4">檔案／物件比較概念</h2>
         <p className="mb-3"><code>==</code> 比值是否相等；<code>is</code> 比是否同一個物件。</p>
-        <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-{`a = [1, 2, 3]
+        <GuideCodeBlock>
+          {`a = [1, 2, 3]
 b = [1, 2, 3]
 print(a == b)  # True
 print(a is b)  # False`}
-        </pre>
+        </GuideCodeBlock>
       </section>
 
     </div>

@@ -129,7 +129,7 @@ const ExamList = () => {
           {exams.map((exam, index) => (
             <motion.div
               key={exam.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+              className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6"
               variants={cardVariants}
               whileHover={{
                 scale: 1.02,
