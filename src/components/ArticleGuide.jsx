@@ -155,14 +155,64 @@ const ArticleGuide = () => {
 
       <section id="datetime" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-3">
         <h2 className="text-xl font-semibold">時間格式化（datetime）</h2>
-        <ul className="list-disc pl-6 space-y-1">
-          <li><code>%Y</code> 四位年份</li>
-          <li><code>%m</code> 月份（01-12）</li>
-          <li><code>%d</code> 日期（01-31）</li>
-          <li><code>%H</code> 小時（24 小時制）</li>
-          <li><code>%M</code> 分鐘</li>
-          <li><code>%S</code> 秒數</li>
-        </ul>
+        <div className="overflow-x-auto">
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th className={thClass}>常見格式</th>
+                <th className={thClass}>用途說明</th>
+                <th className={thClass}>對應少見格式 / 補充</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={tdClass}><code>%Y</code></td>
+                <td className={tdClass}>四位年份（例如：2026）</td>
+                <td className={tdClass}><code>%y</code>（兩位年份，例如：26）</td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>%m</code></td>
+                <td className={tdClass}>月份（01-12）</td>
+                <td className={tdClass}>
+                  <code>%B</code>（英文月份全稱，例如：December）<br/>
+                  <code>%b</code>（英文月份簡稱，例如：Dec）
+                </td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>%d</code></td>
+                <td className={tdClass}>日期（01-31）</td>
+                <td className={tdClass}><code>%j</code>（一年中的第幾天，001-366）</td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>%H</code></td>
+                <td className={tdClass}>小時（24 小時制，00-23）</td>
+                <td className={tdClass}>
+                  <code>%I</code>（12 小時制，01-12）<br/>
+                  <code>%p</code>（AM / PM 標記）
+                </td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>%M</code></td>
+                <td className={tdClass}>分鐘（00-59）</td>
+                <td className={tdClass}>-</td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>%S</code></td>
+                <td className={tdClass}>秒數（00-59）</td>
+                <td className={tdClass}><code>%f</code>（微秒，000000-999999）</td>
+              </tr>
+              <tr>
+                <td className={tdClass}>星期（補充）</td>
+                <td className={tdClass}>星期相關格式化</td>
+                <td className={tdClass}>
+                  <code>%A</code>（星期英文全稱，例如：Monday）<br/>
+                  <code>%a</code>（星期英文簡稱，例如：Mon）<br/>
+                  <code>%w</code>（星期數字 0-6，0 代表星期日）
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
 {`from datetime import datetime
 now = datetime.now()
@@ -569,6 +619,8 @@ class Square:                  # ← 類別名稱會出現在 CLASSES 區塊
               <tr><td className={tdClass}>KeyError</td><td className={tdClass}>字典中找不到指定 key</td><td className={tdClass}><code>{'{"a": 1}["b"]'}</code></td></tr>
               <tr><td className={tdClass}>NameError</td><td className={tdClass}>使用了未定義的變數名稱</td><td className={tdClass}><code>print(undefined_var)</code></td></tr>
               <tr><td className={tdClass}>TypeError</td><td className={tdClass}>型別不相容</td><td className={tdClass}><code>1 + "2"</code></td></tr>
+              <tr><td className={tdClass}>ArithmeticError</td><td className={tdClass}>所有數學運算錯誤的「總稱/父類別」（例如除以零、數值溢位等）</td><td className={tdClass}>數學運算錯誤的基底類別</td></tr>
+              <tr><td className={tdClass}>ZeroDivisionError</td><td className={tdClass}>「除以零」時發生的具體錯誤（屬於 ArithmeticError 的一種）</td><td className={tdClass}><code>1 / 0</code></td></tr>
               <tr><td className={tdClass}>SyntaxError</td><td className={tdClass}>語法錯誤</td><td className={tdClass}><code>if True</code></td></tr>
               <tr><td className={tdClass}>IndentationError</td><td className={tdClass}>縮排錯誤</td><td className={tdClass}><code>if True:\nprint("Hi")</code></td></tr>
               <tr><td className={tdClass}>EOFError</td><td className={tdClass}>輸入串流提前結束</td><td className={tdClass}><code>input()</code></td></tr>
