@@ -23,7 +23,22 @@ const ExamInterface = () => {
         navigate('/exams');
         return;
       }
-      setExam(examData);
+      
+      // 隨機打亂選擇題的選項順序
+      const shuffledQuestions = examData.questions.map((q) => {
+        if (q.type === 'MCQ' && q.options) {
+          return {
+            ...q,
+            options: [...q.options]
+              .map((value) => ({ value, sort: Math.random() }))
+              .sort((a, b) => a.sort - b.sort)
+              .map(({ value }) => value),
+          };
+        }
+        return q;
+      });
+
+      setExam({ ...examData, questions: shuffledQuestions });
       // 計算總時間：題數 × 60秒
       const totalTime = examData.questions.length * 60;
       setTimeRemaining(totalTime);
@@ -102,7 +117,7 @@ const ExamInterface = () => {
       // Calculate score and navigate to results (改為異步)
       const score = await calculateScore(exam, answers);
       navigate(`/exam/${id}/results`, {
-        state: { answers, score },
+        state: { answers, score, shuffledQuestions: exam.questions },
       });
     }
   };

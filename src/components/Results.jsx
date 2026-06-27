@@ -28,10 +28,26 @@ const Results = () => {
         navigate("/exams");
         return;
       }
-      setExam(examData);
+      
+      // 優先使用從 ExamInterface 傳遞過來已打亂的題目與選項順序，若無則在本地打亂
+      const shuffled = location.state?.shuffledQuestions || examData.questions.map((q) => {
+        if (q.type === 'MCQ' && q.options) {
+          return {
+            ...q,
+            options: [...q.options]
+              .map((value) => ({ value, sort: Math.random() }))
+              .sort((a, b) => a.sort - b.sort)
+              .map(({ value }) => value),
+          };
+        }
+        return q;
+      });
+
+      const preparedExamData = { ...examData, questions: shuffled };
+      setExam(preparedExamData);
       
       // 重新計算分數，確保使用最新的驗證邏輯（與顯示詳解使用相同邏輯）
-      const recalculatedScore = await calculateScore(examData, answers);
+      const recalculatedScore = await calculateScore(preparedExamData, answers);
       setScore(recalculatedScore);
       
       setLoading(false);
@@ -43,7 +59,7 @@ const Results = () => {
       }
     };
     fetchExamAndSave();
-  }, [id, answers, stateScore, navigate]);
+  }, [id, answers, stateScore, navigate, location.state]);
 
   if (loading) {
     return (
