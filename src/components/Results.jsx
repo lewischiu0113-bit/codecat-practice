@@ -30,18 +30,22 @@ const Results = () => {
       }
       
       // 優先使用從 ExamInterface 傳遞過來已打亂的題目與選項順序，若無則在本地打亂
-      const shuffled = location.state?.shuffledQuestions || examData.questions.map((q) => {
-        if (q.type === 'MCQ' && q.options) {
-          return {
-            ...q,
-            options: [...q.options]
-              .map((value) => ({ value, sort: Math.random() }))
-              .sort((a, b) => a.sort - b.sort)
-              .map(({ value }) => value),
-          };
-        }
-        return q;
-      });
+      const shuffled = location.state?.shuffledQuestions || [...examData.questions]
+        .map((q) => {
+          if (q.type === 'MCQ' && q.options) {
+            return {
+              ...q,
+              options: [...q.options]
+                .map((value) => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value),
+            };
+          }
+          return q;
+        })
+        .map((q) => ({ q, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ q }) => q);
 
       const preparedExamData = { ...examData, questions: shuffled };
       setExam(preparedExamData);

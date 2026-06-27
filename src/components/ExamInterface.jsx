@@ -24,19 +24,23 @@ const ExamInterface = () => {
         return;
       }
       
-      // 隨機打亂選擇題的選項順序
-      const shuffledQuestions = examData.questions.map((q) => {
-        if (q.type === 'MCQ' && q.options) {
-          return {
-            ...q,
-            options: [...q.options]
-              .map((value) => ({ value, sort: Math.random() }))
-              .sort((a, b) => a.sort - b.sort)
-              .map(({ value }) => value),
-          };
-        }
-        return q;
-      });
+      // 隨機打亂選擇題的選項順序，並且隨機打亂題目本身的順序
+      const shuffledQuestions = [...examData.questions]
+        .map((q) => {
+          if (q.type === 'MCQ' && q.options) {
+            return {
+              ...q,
+              options: [...q.options]
+                .map((value) => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value),
+            };
+          }
+          return q;
+        })
+        .map((q) => ({ q, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ q }) => q);
 
       setExam({ ...examData, questions: shuffledQuestions });
       // 計算總時間：題數 × 60秒
