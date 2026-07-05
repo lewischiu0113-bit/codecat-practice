@@ -14,8 +14,10 @@ const sections = [
   { id: "three-format", title: "三種格式化（%, format, f-string）" },
 ];
 
+import { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Copy, Check } from 'lucide-react';
 
 const tableClass =
   "min-w-full text-xs sm:text-sm text-left border-collapse";
@@ -23,13 +25,31 @@ const thClass = "border-b-2 border-gray-300 bg-orange-50/50 px-3 py-1.5 font-sem
 const tdClass = "border-b border-gray-200 px-3 py-1.5 align-top text-gray-600 text-xs sm:text-sm";
 
 const GuideCodeBlock = ({ children, language = 'python' }) => {
-  const handleCopyPrevent = (e) => {
-    e.preventDefault();
-    alert('為了學習成效，本頁面的範例程式碼禁止複製貼上，請手動練習輸入！');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(String(children).replace(/\n$/, ''));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
   };
 
   return (
-    <div onCopy={handleCopyPrevent} className="my-3 select-none">
+    <div className="relative group my-3">
+      <button
+        onClick={handleCopy}
+        className="absolute right-3 top-3 p-1.5 rounded-lg bg-gray-800/80 text-gray-400 hover:text-white border border-gray-700/50 hover:bg-gray-700/80 transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 z-10"
+        title="複製程式碼"
+      >
+        {copied ? (
+          <Check className="w-4 h-4 text-green-400" />
+        ) : (
+          <Copy className="w-4 h-4" />
+        )}
+      </button>
       <SyntaxHighlighter
         style={oneDark}
         language={language}
@@ -489,6 +509,74 @@ class TestStringMethods(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()`}
         </GuideCodeBlock>
+        <div className="overflow-x-auto mt-4">
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th className={thClass}>斷言方法 (Assert Method)</th>
+                <th className={thClass}>說明（判斷條件）</th>
+                <th className={thClass}>範例</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={tdClass}><code>self.assertEqual(a, b)</code></td>
+                <td className={tdClass}>判斷 <code>a == b</code> (兩值是否相等)</td>
+                <td className={tdClass}><code>self.assertEqual(1 + 1, 2)</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertNotEqual(a, b)</code></td>
+                <td className={tdClass}>判斷 <code>a != b</code> (兩值是否不相等)</td>
+                <td className={tdClass}><code>self.assertNotEqual(5, 3)</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertTrue(x)</code></td>
+                <td className={tdClass}>判斷 <code>bool(x)</code> 是否為 <code>True</code></td>
+                <td className={tdClass}><code>self.assertTrue(10 &gt; 5)</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertFalse(x)</code></td>
+                <td className={tdClass}>判斷 <code>bool(x)</code> 是否為 <code>False</code></td>
+                <td className={tdClass}><code>self.assertFalse(3 &gt; 5)</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertIs(a, b)</code></td>
+                <td className={tdClass}>判斷 <code>a is b</code> (是否為相同物件)</td>
+                <td className={tdClass}><code>self.assertIs(a, a)</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertIsNone(x)</code></td>
+                <td className={tdClass}>判斷 <code>x is None</code> (是否為 None)</td>
+                <td className={tdClass}><code>self.assertIsNone(None)</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertIsNotNone(x)</code></td>
+                <td className={tdClass}>判斷 <code>x is not None</code> (是否不為 None)</td>
+                <td className={tdClass}><code>self.assertIsNotNone("hello")</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertIn(a, b)</code></td>
+                <td className={tdClass}>判斷 <code>a in b</code> (a 是否在容器 b 中)</td>
+                <td className={tdClass}><code>self.assertIn('apple', ['apple', 'banana'])</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>self.assertNotIn(a, b)</code></td>
+                <td className={tdClass}>判斷 <code>a not in b</code> (a 是否不在容器 b 中)</td>
+                <td className={tdClass}><code>self.assertNotIn('orange', ['apple', 'banana'])</code></td>
+              </tr>
+              <tr>
+                <td className={tdClass}><code>with self.assertRaises(Error)</code></td>
+                <td className={tdClass}>判斷是否拋出特定錯誤（例外）</td>
+                <td className={tdClass}>
+                  <pre className="text-xs">
+                    {`with self.assertRaises(TypeError):
+    "hello".split(2)`}
+                  </pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section id="unittest-cli" className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6 scroll-mt-8">
@@ -525,28 +613,28 @@ if __name__ == '__main__':
           <p className="font-medium">常見範例</p>
           <GuideCodeBlock>
             {`# 1) 讀取整個檔案（r）
-with open('data.txt', 'r', encoding='utf-8') as f:
+with open('data.txt', 'r') as f:
     content = f.read()
 print(content)
 
 # 2) 寫入檔案（w，會覆蓋）
-with open('output.txt', 'w', encoding='utf-8') as f:
+with open('output.txt', 'w') as f:
     f.write('Hello\\n')
     f.write('World\\n')
 
 # 3) 追加內容（a，不覆蓋）
-with open('output.txt', 'a', encoding='utf-8') as f:
+with open('output.txt', 'a') as f:
     f.write('Append this line\\n')`}
           </GuideCodeBlock>
 
           <GuideCodeBlock>
             {`# 4) 逐行讀取（省記憶體）
-with open('big.txt', 'r', encoding='utf-8') as f:
+with open('big.txt', 'r') as f:
     for line in f:
         print(line.strip())
 
 # 5) readline / readlines
-with open('notes.txt', 'r', encoding='utf-8') as f:
+with open('notes.txt', 'r') as f:
     first = f.readline()     # 只讀第一行
     rest = f.readlines()     # 剩下所有行（list）
 print(first)
@@ -647,6 +735,9 @@ class Square:                  # ← 類別名稱會出現在 CLASSES 區塊
               <tr><td className={tdClass}>KeyError</td><td className={tdClass}>字典中找不到指定 key</td><td className={tdClass}><code>{'{"a": 1}["b"]'}</code></td></tr>
               <tr><td className={tdClass}>NameError</td><td className={tdClass}>使用了未定義的變數名稱</td><td className={tdClass}><code>print(undefined_var)</code></td></tr>
               <tr><td className={tdClass}>TypeError</td><td className={tdClass}>型別不相容</td><td className={tdClass}><code>1 + "2"</code></td></tr>
+              <tr><td className={tdClass}>ValueError</td><td className={tdClass}>傳入參數型別正確但值不合法/無效</td><td className={tdClass}><code>int("abc")</code></td></tr>
+              <tr><td className={tdClass}>IndexError</td><td className={tdClass}>序列索引超出範圍（如清單、元組、字串等）</td><td className={tdClass}><code>[1, 2][5]</code></td></tr>
+              <tr><td className={tdClass}>except</td><td className={tdClass}>例外處理關鍵字，用於 try/except 結構中捕獲並處理例外錯誤</td><td className={tdClass}><code>{"try:\n  1/0\nexcept ZeroDivisionError:\n  ..."}</code></td></tr>
               <tr><td className={tdClass}>ArithmeticError</td><td className={tdClass}>所有數學運算錯誤的「總稱/父類別」（例如除以零、數值溢位等）</td><td className={tdClass}>數學運算錯誤的基底類別</td></tr>
               <tr><td className={tdClass}>ZeroDivisionError</td><td className={tdClass}>「除以零」時發生的具體錯誤（屬於 ArithmeticError 的一種）</td><td className={tdClass}><code>1 / 0</code></td></tr>
               <tr><td className={tdClass}>SyntaxError</td><td className={tdClass}>語法錯誤</td><td className={tdClass}><code>if True</code></td></tr>

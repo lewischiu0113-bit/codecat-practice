@@ -324,10 +324,10 @@ INSERT INTO questions (exam_id, type, question, options, correct_answer, explana
   {"input": "data.txt\nTest Content", "expectedOutput": "Test Content"},
   {"input": "file.txt\nRead me", "expectedOutput": "Read me"}
 ]'::jsonb, 1),
-(21, 'CodeExecution', E'## 寫入多行並逐行讀取\n\n編寫一個程式，讀取一個檔案路徑和三行內容，先將內容寫入檔案（每行一個），然後逐行讀取檔案內容並輸出。\n\n**說明：**\n- 使用 `input()` 讀取檔案路徑（第一行）\n- 使用 `input()` 讀取三行內容（第二、三、四行）\n- 先使用 `with open()` 語法開啟檔案（寫入模式）寫入內容（每行一個，記得加上換行符號）\n- 再使用 `with open()` 語法開啟檔案（讀取模式）逐行讀取\n- 使用 `for line in f:` 逐行讀取\n- 使用 `print()` 輸出每一行（不自動增加換行，因為檔案內容已有換行）\n\n**範例：**\n如果輸入是：\n```\ndata.txt\nLine 1\nLine 2\nLine 3\n```\n\n則輸出應該是：\n```\nLine 1\nLine 2\nLine 3\n```', NULL, E'filename = input()' || chr(10) || 'line1 = input()' || chr(10) || 'line2 = input()' || chr(10) || 'line3 = input()' || chr(10) || 'with open(filename, "w") as f:' || chr(10) || '    f.write(line1 + "\\n")' || chr(10) || '    f.write(line2 + "\\n")' || chr(10) || '    f.write(line3 + "\\n")' || chr(10) || 'with open(filename, "r") as f:' || chr(10) || '    for line in f:' || chr(10) || '        print(line, end="")', '先使用寫入模式寫入多行內容（記得加上換行符號），再使用讀取模式逐行讀取。', '[
+(21, 'CodeExecution', E'## 寫入三行內容並讀取\n\n編寫一個程式，讀取一個檔案路徑和三行內容，先將這三行內容寫入檔案（每行一個，記得加上換行符號），然後讀取該檔案的內容並輸出。\n\n**說明：**\n- 使用 `input()` 讀取檔案路徑（第一行）\n- 使用 `input()` 讀取第一行內容（第二行）\n- 使用 `input()` 讀取第二行內容（第三行）\n- 使用 `input()` 讀取第三行內容（第四行）\n- 先使用 `with open()` 語法開啟檔案（寫入模式）寫入三行內容\n- 再使用 `with open()` 語法開啟檔案（讀取模式）讀取內容\n- 使用 `print()` 輸出讀取的內容\n\n**範例：**\n如果輸入是：\n```\ntest.txt\nHello\nWorld\nPython\n```\n\n則輸出應該是：\n```\nHello\nWorld\nPython\n```', NULL, E'filename = input()' || chr(10) || 'line1 = input()' || chr(10) || 'line2 = input()' || chr(10) || 'line3 = input()' || chr(10) || 'with open(filename, "w") as f:' || chr(10) || '    f.write(line1 + "\\n" + line2 + "\\n" + line3)' || chr(10) || 'with open(filename, "r") as f:' || chr(10) || '    print(f.read(), end="")', '先以寫入模式開啟檔案並將讀入的三行內容寫入，再以讀取模式開啟檔案將內容全部讀出並印出。', '[
+  {"input": "test.txt\nHello\nWorld\nPython", "expectedOutput": "Hello\nWorld\nPython"},
   {"input": "data.txt\nLine 1\nLine 2\nLine 3", "expectedOutput": "Line 1\nLine 2\nLine 3"},
-  {"input": "test.txt\nFirst\nSecond", "expectedOutput": "First\nSecond"},
-  {"input": "file.txt\nA\nB\nC", "expectedOutput": "A\nB\nC"}
+  {"input": "file.txt\nApple\nBanana\nOrange", "expectedOutput": "Apple\nBanana\nOrange"}
 ]'::jsonb, 3);
 
 -- 考試 22: Python 高階綜合實作
