@@ -10,11 +10,14 @@ import ArticleGuide from './components/ArticleGuide';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
+import WelcomeSplash from './components/WelcomeSplash';
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <>
+      <WelcomeSplash />
+      <Router>
+        <AuthProvider>
         <Routes>
           {/* 公開路由：登入和註冊 */}
           <Route path="/login" element={<Login />} />
@@ -45,6 +48,7 @@ function App() {
         </Routes>
       </AuthProvider>
     </Router>
+    </>
   );
 }
 
