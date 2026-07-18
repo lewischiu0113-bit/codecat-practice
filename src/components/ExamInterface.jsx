@@ -50,7 +50,7 @@ const ExamInterface = () => {
       const totalTime = examData.questions.length * 60;
       setTimeRemaining(totalTime);
       const elapsed = Date.now() - startTime;
-      const remainingTime = Math.max(0, 2000 - elapsed);
+      const remainingTime = Math.max(0, 1500 - elapsed);
       setTimeout(() => {
         setLoading(false);
       }, remainingTime);
@@ -120,7 +120,7 @@ const ExamInterface = () => {
     }
   };
 
-  const allAnswered = exam.questions.every((_, index) => answers[index] !== undefined && answers[index] !== '');
+  const allAnswered = exam?.questions?.every((_, index) => answers[index] !== undefined && answers[index] !== '') || false;
 
   return (
     <div className="relative min-h-screen">

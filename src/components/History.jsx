@@ -21,7 +21,7 @@ const History = () => {
     const records = await getExamRecords();
     setHistory(records);
     const elapsed = Date.now() - startTime;
-    const remainingTime = Math.max(0, 2000 - elapsed);
+    const remainingTime = Math.max(0, 1500 - elapsed);
     setTimeout(() => {
       setLoading(false);
     }, remainingTime);
