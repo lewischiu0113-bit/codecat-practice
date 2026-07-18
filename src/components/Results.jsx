@@ -3,6 +3,8 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trophy, Loader2 } from "lucide-react";
 import { getExamById, saveExamRecord, checkAnswer, calculateScore } from "../data";
 import QuestionCard from "./QuestionCard";
+import GorgeousLoader from "./GorgeousLoader";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Results = () => {
   const { id } = useParams();
@@ -23,6 +25,7 @@ const Results = () => {
         return;
       }
       setLoading(true);
+      const startTime = Date.now();
       const examData = await getExamById(id);
       if (!examData) {
         navigate("/exams");
@@ -53,32 +56,23 @@ const Results = () => {
       // 重新計算分數，確保使用最新的驗證邏輯（與顯示詳解使用相同邏輯）
       const recalculatedScore = await calculateScore(preparedExamData, answers);
       setScore(recalculatedScore);
-      
-      setLoading(false);
 
       // 只在尚未保存時才保存記錄（防止 React StrictMode 重複執行）
       if (!hasSavedRef.current) {
         hasSavedRef.current = true;
         await saveExamRecord(id, recalculatedScore, answers);
       }
+      
+      const elapsed = Date.now() - startTime;
+      const remainingTime = Math.max(0, 2000 - elapsed);
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
     };
     fetchExamAndSave();
   }, [id, answers, stateScore, navigate, location.state]);
 
-  if (loading) {
-    return (
-      <div className="p-8 flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin text-primary" size={32} />
-          <p className="text-gray-600">載入結果中...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!exam || !answers || !score) {
-    return null;
-  }
+  // 載入與內容切換改由下方 AnimatePresence 處理以達到平滑淡出過渡
 
   const getScoreColor = () => {
     if (score.percentage >= 80) return "text-green-600";
@@ -93,7 +87,26 @@ const Results = () => {
   };
 
   return (
-    <div className="p-8 animate-fade-in">
+    <div className="relative min-h-screen">
+      <AnimatePresence>
+        {loading || !exam || !answers || !score ? (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 z-50"
+          >
+            <GorgeousLoader text="Loading Results..." />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            className="p-8 animate-fade-in"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
       <button
         onClick={() => navigate("/exams")}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left"
@@ -150,6 +163,9 @@ const Results = () => {
           返回列表
         </button>
       </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

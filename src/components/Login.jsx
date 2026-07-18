@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { LogIn, User, Lock, Loader2 } from "lucide-react";
 import { loginUser } from "../utils/auth";
 import BlobBackground from "./BlobBackground";
+import TextParticles from "./TextParticles";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showSplash, setShowSplash] = useState(true);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,168 +42,191 @@ const Login = () => {
       {/* 背景裝飾動畫 - 使用 framer-motion 簡化 */}
       <BlobBackground />
 
-      <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md relative z-10 animate-scale-in border border-orange-100">
-        {/* 標題區域 - 漸進出現動畫 */}
-        <div className="text-center mb-8">
-          <div className="inline-block mb-4 animate-fade-in-down">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              {/* <div className="w-40 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg animate-bounce-in">
-                <span className="text-2xl font-bold text-white">Pthon</span>
-              </div> */}
+      <AnimatePresence mode="wait">
+        {showSplash ? (
+          <motion.div 
+            key="splash"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
+          >
+            <TextParticles 
+              text="CodeCat" 
+              duration={2500} 
+              onComplete={() => setShowSplash(false)} 
+            />
+          </motion.div>
+        ) : (
+          <motion.div 
+            key="form"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md relative z-10 border border-orange-100"
+          >
+            {/* 標題區域 - 漸進出現動畫 */}
+            <div className="text-center mb-8">
+              <div className="inline-block mb-4 animate-fade-in-down">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  {/* <div className="w-40 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg animate-bounce-in">
+                    <span className="text-2xl font-bold text-white">Pthon</span>
+                  </div> */}
+                </div>
+              </div>
+              <h1
+                className="text-4xl font-bold mb-2 animate-fade-in-up"
+                style={{ animationDelay: "0.2s" }}
+              >
+                <span
+                  className="text-gray-800 inline-block animate-slide-in-left"
+                  style={{ animationDelay: "0.3s" }}
+                >
+                  CodeCat
+                </span>{" "}
+                <span
+                  className="text-primary inline-block animate-slide-in-right"
+                  style={{ animationDelay: "0.4s" }}
+                >
+                  Practice
+                </span>
+              </h1>
+              <p
+                className="text-gray-600 text-lg animate-fade-in-up"
+                style={{ animationDelay: "0.5s" }}
+              >
+                登入您的帳號
+              </p>
+              <div
+                className="mt-4 w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto animate-scale-in"
+                style={{ animationDelay: "0.6s" }}
+              ></div>
             </div>
-          </div>
-          <h1
-            className="text-4xl font-bold mb-2 animate-fade-in-up"
-            style={{ animationDelay: "0.2s" }}
-          >
-            <span
-              className="text-gray-800 inline-block animate-slide-in-left"
-              style={{ animationDelay: "0.3s" }}
-            >
-              CodeCat
-            </span>{" "}
-            <span
-              className="text-primary inline-block animate-slide-in-right"
-              style={{ animationDelay: "0.4s" }}
-            >
-              Practice
-            </span>
-          </h1>
-          <p
-            className="text-gray-600 text-lg animate-fade-in-up"
-            style={{ animationDelay: "0.5s" }}
-          >
-            登入您的帳號
-          </p>
-          <div
-            className="mt-4 w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto animate-scale-in"
-            style={{ animationDelay: "0.6s" }}
-          ></div>
-        </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          {/* 使用者名稱輸入框 - 順序出現 */}
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: "0.7s" }}
-          >
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              使用者名稱
-            </label>
-            <div className="relative group">
-              <User
-                className="absolute left-3 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors duration-300"
-                size={20}
-              />
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                  setError("");
-                }}
-                required
-                placeholder="請輸入使用者名稱"
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-orange-200 transition-all duration-300 transform focus:scale-[1.02]"
-                autoComplete="username"
-              />
-            </div>
-          </div>
+            <form onSubmit={handleLogin} className="space-y-6">
+              {/* 使用者名稱輸入框 - 順序出現 */}
+              <div
+                className="animate-fade-in-up"
+                style={{ animationDelay: "0.7s" }}
+              >
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  使用者名稱
+                </label>
+                <div className="relative group">
+                  <User
+                    className="absolute left-3 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors duration-300"
+                    size={20}
+                  />
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      setError("");
+                    }}
+                    required
+                    placeholder="請輸入使用者名稱"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-orange-200 transition-all duration-300 transform focus:scale-[1.02]"
+                    autoComplete="username"
+                  />
+                </div>
+              </div>
 
-          {/* 密碼輸入框 - 順序出現 */}
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: "0.8s" }}
-          >
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              密碼
-            </label>
-            <div className="relative group">
-              <Lock
-                className="absolute left-3 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors duration-300"
-                size={20}
-              />
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="請輸入密碼"
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-orange-200 transition-all duration-300 transform focus:scale-[1.02]"
-                autoComplete="current-password"
-              />
-            </div>
-          </div>
+              {/* 密碼輸入框 - 順序出現 */}
+              <div
+                className="animate-fade-in-up"
+                style={{ animationDelay: "0.8s" }}
+              >
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  密碼
+                </label>
+                <div className="relative group">
+                  <Lock
+                    className="absolute left-3 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors duration-300"
+                    size={20}
+                  />
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="請輸入密碼"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-orange-200 transition-all duration-300 transform focus:scale-[1.02]"
+                    autoComplete="current-password"
+                  />
+                </div>
+              </div>
 
-          {error && (
-            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-3 animate-slide-in-down animate-shake">
-              <p className="text-sm text-red-600 flex items-center gap-2">
-                <span className="text-red-500">⚠</span>
-                {error}
+              {error && (
+                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-3 animate-slide-in-down animate-shake">
+                  <p className="text-sm text-red-600 flex items-center gap-2">
+                    <span className="text-red-500">⚠</span>
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              {/* 登入按鈕 - 順序出現 */}
+              <div
+                className="animate-fade-in-up"
+                style={{ animationDelay: "0.9s" }}
+              >
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 relative overflow-hidden group"
+                >
+                  {/* 按鈕光澤效果 */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
+
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin relative z-10" size={20} />
+                      <span className="relative z-10">登入中...</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogIn
+                        size={20}
+                        className="relative z-10 transition-transform duration-300 group-hover:translate-x-1"
+                      />
+                      <span className="relative z-10">登入</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* 註冊連結 - 順序出現 */}
+            <div
+              className="mt-6 text-center animate-fade-in-up"
+              style={{ animationDelay: "1s" }}
+            >
+              <p className="text-gray-600 text-sm">
+                還沒有帳號？{" "}
+                <Link
+                  to="/register"
+                  className="text-primary font-medium hover:text-orange-600 transition-all duration-300 inline-flex items-center gap-1 group"
+                >
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">
+                    立即註冊
+                  </span>
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">
+                    →
+                  </span>
+                </Link>
               </p>
             </div>
-          )}
-
-          {/* 登入按鈕 - 順序出現 */}
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: "0.9s" }}
-          >
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 relative overflow-hidden group"
-            >
-              {/* 按鈕光澤效果 */}
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
-
-              {loading ? (
-                <>
-                  <Loader2 className="animate-spin relative z-10" size={20} />
-                  <span className="relative z-10">登入中...</span>
-                </>
-              ) : (
-                <>
-                  <LogIn
-                    size={20}
-                    className="relative z-10 transition-transform duration-300 group-hover:translate-x-1"
-                  />
-                  <span className="relative z-10">登入</span>
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-
-        {/* 註冊連結 - 順序出現 */}
-        <div
-          className="mt-6 text-center animate-fade-in-up"
-          style={{ animationDelay: "1s" }}
-        >
-          <p className="text-gray-600 text-sm">
-            還沒有帳號？{" "}
-            <Link
-              to="/register"
-              className="text-primary font-medium hover:text-orange-600 transition-all duration-300 inline-flex items-center gap-1 group"
-            >
-              <span className="group-hover:translate-x-1 transition-transform duration-300">
-                立即註冊
-              </span>
-              <span className="group-hover:translate-x-1 transition-transform duration-300">
-                →
-              </span>
-            </Link>
-          </p>
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

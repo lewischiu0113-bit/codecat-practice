@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CheckCircle, ArrowLeft, Loader2, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle, ArrowLeft, Clock, AlertCircle } from 'lucide-react';
 import { getExamById, calculateScore } from '../data';
 import QuestionCard from './QuestionCard';
+import GorgeousLoader from './GorgeousLoader';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ExamInterface = () => {
   const { id } = useParams();
@@ -18,6 +20,7 @@ const ExamInterface = () => {
   useEffect(() => {
     const fetchExam = async () => {
       setLoading(true);
+      const startTime = Date.now();
       const examData = await getExamById(id);
       if (!examData) {
         navigate('/exams');
@@ -46,7 +49,11 @@ const ExamInterface = () => {
       // 計算總時間：題數 × 60秒
       const totalTime = examData.questions.length * 60;
       setTimeRemaining(totalTime);
-      setLoading(false);
+      const elapsed = Date.now() - startTime;
+      const remainingTime = Math.max(0, 2000 - elapsed);
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
     };
     fetchExam();
   }, [id, navigate]);
@@ -93,20 +100,7 @@ const ExamInterface = () => {
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
 
-  if (loading) {
-    return (
-      <div className="p-8 flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin text-primary" size={32} />
-          <p className="text-gray-600">載入考試中...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!exam) {
-    return null;
-  }
+  // 載入與內容切換改由下方 AnimatePresence 處理以達到平滑淡出過渡
 
   const handleAnswerChange = (questionIndex, answer) => {
     setAnswers((prev) => ({
@@ -129,7 +123,26 @@ const ExamInterface = () => {
   const allAnswered = exam.questions.every((_, index) => answers[index] !== undefined && answers[index] !== '');
 
   return (
-    <div className="p-8 animate-fade-in">
+    <div className="relative min-h-screen">
+      <AnimatePresence>
+        {loading || !exam ? (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 z-50"
+          >
+            <GorgeousLoader text="Loading Exam..." />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            className="p-8 animate-fade-in"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
       <button
         onClick={() => navigate('/exams')}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left"
@@ -213,6 +226,9 @@ const ExamInterface = () => {
           </div>
         </div>
       )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

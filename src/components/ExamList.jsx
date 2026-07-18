@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Clock, BookOpen, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Play, Clock, BookOpen } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getExams } from '../data';
 import BlobBackground from './BlobBackground';
+import GorgeousLoader from './GorgeousLoader';
 
 const ExamList = () => {
   const [exams, setExams] = useState([]);
@@ -12,9 +13,14 @@ const ExamList = () => {
   useEffect(() => {
     const fetchExams = async () => {
       setLoading(true);
+      const startTime = Date.now();
       const data = await getExams();
       setExams(data);
-      setLoading(false);
+      const elapsed = Date.now() - startTime;
+      const remainingTime = Math.max(0, 2000 - elapsed);
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
     };
     fetchExams();
   }, []);
@@ -32,16 +38,7 @@ const ExamList = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-8 flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin text-primary" size={32} />
-          <p className="text-gray-600">載入考試列表中...</p>
-        </div>
-      </div>
-    );
-  }
+  // 載入與內容切換改由下方 AnimatePresence 處理以達到平滑淡出過渡
 
   // 動畫變體
   const containerVariants = {
@@ -83,12 +80,25 @@ const ExamList = () => {
   return (
     <div className="relative min-h-screen bg-gray-50">
       <BlobBackground opacity={0.6} />
-      <motion.div
-        className="p-8 relative z-10"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <AnimatePresence>
+        {loading ? (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 z-50"
+          >
+            <GorgeousLoader text="Loading Exams..." />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            className="p-8 relative z-10"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
       <motion.div className="mb-8" variants={headerVariants}>
         <motion.h1
           className="text-3xl font-bold text-gray-800 mb-2"
@@ -193,7 +203,9 @@ const ExamList = () => {
           ))}
         </motion.div>
       )}
-      </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
