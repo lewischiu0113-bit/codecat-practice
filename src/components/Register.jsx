@@ -4,6 +4,7 @@ import { UserPlus, User, Lock, Loader2 } from 'lucide-react';
 import { registerUser } from '../utils/auth';
 import { verifyPassword } from '../utils/encryption';
 import BlobBackground from "./BlobBackground";
+import CodeRainBackground from "./CodeRainBackground";
 import TextParticles from "./TextParticles";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -99,8 +100,9 @@ const Register = () => {
             key="splash"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
+            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none bg-white"
           >
+            <CodeRainBackground opacityClass="opacity-30" />
             <TextParticles 
               text="CodeCat" 
               duration={2500} 

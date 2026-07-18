@@ -1,255 +1,139 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import CodeRainBackground from './CodeRainBackground';
 
-const GorgeousLoader = ({ text = "Loading...", fullscreen = true }) => {
-  const canvasRef = useRef(null);
-  const mouseRef = useRef({ x: 0, y: 0, active: false, targetOffsetX: 0, targetOffsetY: 0 });
+// 產生隨機亂碼的文字組件
+const ScrambleText = ({ text, className, delay = 0, continuous = false }) => {
+  const [displayText, setDisplayText] = useState("");
+  const chars = "!<>-_\\\\/[]{}—=+*^?#________";
+  
+  useEffect(() => {
+    let iteration = 0;
+    let interval = null;
+    
+    // 初始化時顯示亂碼
+    setDisplayText(
+      text.split("").map(() => chars[Math.floor(Math.random() * chars.length)]).join("")
+    );
+    
+    const startTimeout = setTimeout(() => {
+      interval = setInterval(() => {
+        setDisplayText(
+          text
+            .split("")
+            .map((letter, index) => {
+              if (!continuous && index < iteration) return text[index];
+              // 若遇到真實字串中的空白，也可選擇保留，但在這我們讓亂碼完全替換
+              if (!continuous && letter === " " && index < iteration) return " ";
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("")
+        );
+
+        if (!continuous) {
+          if (iteration >= text.length) {
+            clearInterval(interval);
+          }
+          iteration += 1 / 3; // 調慢解碼速度，讓變化感更明顯
+        }
+      }, 40); // 稍微放慢更新頻率讓閃動感更好
+    }, delay);
+    
+    return () => {
+      clearTimeout(startTimeout);
+      if (interval) clearInterval(interval);
+    };
+  }, [text, delay, continuous]);
+
+  return <span className={className}>{displayText}</span>;
+};
+
+// 數字跳動組件
+const ProgressCounter = () => {
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    const duration = 1500; // 對齊 1.5 秒
+    const steps = 60;
+    const intervalTime = duration / steps;
+    let currentStep = 0;
 
-    const resizeCanvas = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      const rect = parent.getBoundingClientRect();
-      canvas.width = rect.width || window.innerWidth;
-      canvas.height = rect.height || window.innerHeight;
-    };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    const interval = setInterval(() => {
+      currentStep++;
+      // 使用 easeOutQuart 類似的緩動效果讓數字增長看起來更自然
+      const progress = 1 - Math.pow(1 - currentStep / steps, 4);
+      setCount(Math.min(99, Math.floor(progress * 100)));
 
-    // 初始化星子數據 (Glitter Wrap Warp Speed 效果)
-    const starCount = 120;
-    const stars = [];
-    const maxDepth = 1000;
-    
-    // 設定顏色，以淺紫色、粉色、暖橘色調為主，搭配您的程式碼風格
-    const colors = [
-      'rgba(168, 85, 247, 0.75)', // 紫色 (purple-500)
-      'rgba(236, 72, 153, 0.75)', // 桃粉 (pink-500)
-      'rgba(255, 107, 0, 0.75)',   // 橘色 (primary)
-      'rgba(129, 140, 248, 0.75)', // 靛藍 (indigo-400)
-    ];
-
-    for (let i = 0; i < starCount; i++) {
-      stars.push({
-        x: (Math.random() - 0.5) * 1600,
-        y: (Math.random() - 0.5) * 1600,
-        z: Math.random() * maxDepth,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: Math.random() * 1.5 + 0.8
-      });
-    }
-
-    const handleMouseMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      
-      // 計算滑鼠相對於中心的偏移量，做為透視扭曲的基準
-      mouseRef.current.x = mx;
-      mouseRef.current.y = my;
-      mouseRef.current.active = true;
-    };
-
-    const handleMouseLeave = () => {
-      mouseRef.current.active = false;
-    };
-
-    const parentElement = canvas.parentElement;
-    if (parentElement) {
-      parentElement.addEventListener('mousemove', handleMouseMove);
-      parentElement.addEventListener('mouseleave', handleMouseLeave);
-    }
-
-    let time = 0;
-    let currentOffsetX = 0;
-    let currentOffsetY = 0;
-
-    const draw = () => {
-      time += 0.01;
-      
-      // 清理畫布，保留一點點透明度可形成淡淡的星軌拖尾效果，讓質感更絲滑
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const width = canvas.width;
-      const height = canvas.height;
-      const centerX = width / 2;
-      const centerY = height / 2;
-
-      // 追蹤滑鼠造成的中心點偏折，創造 3D 透視隨著滑鼠扭曲的效果
-      const mouse = mouseRef.current;
-      if (mouse.active) {
-        const targetOffsetX = (mouse.x - centerX) * 0.25;
-        const targetOffsetY = (mouse.y - centerY) * 0.25;
-        currentOffsetX += (targetOffsetX - currentOffsetX) * 0.08;
-        currentOffsetY += (targetOffsetY - currentOffsetY) * 0.08;
-      } else {
-        // 滑鼠閒置時，自動進行優雅慢速正弦偏折
-        const targetOffsetX = Math.cos(time * 0.8) * (width * 0.06);
-        const targetOffsetY = Math.sin(time * 0.5) * (height * 0.04);
-        currentOffsetX += (targetOffsetX - currentOffsetX) * 0.04;
-        currentOffsetY += (targetOffsetY - currentOffsetY) * 0.04;
+      if (currentStep >= steps) {
+        clearInterval(interval);
       }
+    }, intervalTime);
 
-      const speed = 7.5; // 星軌前進速度
-      const scaleFactor = 220; // 投影比例
-
-      // 繪製星空 Warp 效果
-      for (let i = 0; i < starCount; i++) {
-        const star = stars[i];
-
-        // 往前移動
-        star.z -= speed;
-
-        // 如果超出螢幕前方，重新置於遠處
-        if (star.z <= 0) {
-          star.z = maxDepth;
-          star.x = (Math.random() - 0.5) * 1600;
-          star.y = (Math.random() - 0.5) * 1600;
-          star.color = colors[Math.floor(Math.random() * colors.length)];
-          star.size = Math.random() * 1.5 + 0.8;
-        }
-
-        // 3D 投影計算
-        const k = scaleFactor / star.z;
-        const px = star.x * k + centerX + currentOffsetX;
-        const py = star.y * k + centerY + currentOffsetY;
-
-        // 前一幀的位置 (用以繪製星軌線段)
-        const prevK = scaleFactor / (star.z + speed);
-        const ppx = star.x * prevK + centerX + currentOffsetX;
-        const ppy = star.y * prevK + centerY + currentOffsetY;
-
-        // 隨著距離變近，粒子看起來越大、越亮
-        const relativeScale = 1 - star.z / maxDepth;
-        const alpha = Math.min(1, relativeScale * 1.5);
-        const lineWidth = star.size * relativeScale * 1.5;
-
-        // 若粒子在可見範圍內，開始繪製
-        if (px >= 0 && px <= width && py >= 0 && py <= height) {
-          // 1. 繪製星軌線段 (Glitter Warp Trail)
-          ctx.beginPath();
-          ctx.moveTo(ppx, ppy);
-          ctx.lineTo(px, py);
-          ctx.strokeStyle = star.color.replace('0.75', (0.35 * alpha).toString());
-          ctx.lineWidth = lineWidth;
-          ctx.stroke();
-
-          // 2. 繪製閃亮星頭 (Glitter Dot)
-          ctx.beginPath();
-          ctx.arc(px, py, lineWidth * 1.2, 0, Math.PI * 2);
-          ctx.fillStyle = star.color.replace('0.75', alpha.toString());
-          
-          // 加強發光質感
-          ctx.shadowBlur = 6;
-          ctx.shadowColor = star.color;
-          ctx.fill();
-        }
-      }
-
-      // 重設陰影以免影響其他元件繪製
-      ctx.shadowBlur = 0;
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (parentElement) {
-        parentElement.removeEventListener('mousemove', handleMouseMove);
-        parentElement.removeEventListener('mouseleave', handleMouseLeave);
-      }
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  // 滿版設計，採用程式碼風格的溫和淺紫色背景 (Purple-50 到 Purple-100 的柔和漸變)
+  return <span>{count}</span>;
+};
+
+const GorgeousLoader = ({ text = "INITIALIZING SYSTEM MODULES...", fullscreen = true }) => {
   const containerClasses = fullscreen
     ? "fixed inset-0 z-50 bg-gradient-to-br from-purple-50 via-white to-purple-100/60 flex flex-col items-center justify-center overflow-hidden w-full h-full"
     : "relative w-full min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center bg-gradient-to-br from-purple-50/50 via-white/80 to-purple-100/30 backdrop-blur-sm overflow-hidden rounded-xl";
 
-  // 字元動畫變體
-  const wordVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.06,
-      },
-    },
-  };
-
-  const letterVariants = {
-    hidden: { y: 10, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 90,
-      },
-    },
-  };
-
-  const floatVariants = {
-    animate: (i) => ({
-      y: [0, -6, 0],
-      textShadow: [
-        "0 0 0px rgba(168,85,247,0)",
-        "0 0 8px rgba(168,85,247,0.35)",
-        "0 0 0px rgba(168,85,247,0)"
-      ],
-      transition: {
-        duration: 2.2,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: i * 0.12,
-      },
-    }),
-  };
-
   return (
     <div className={containerClasses}>
-      {/* Glitter Wrap 畫布背景 */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none block animate-fade-in"
-      />
+      {/* 程式碼雨背景 */}
+      <CodeRainBackground />
 
-      {/* 逐字優雅文字 reveal */}
-      <div className="relative z-20 flex flex-col items-center gap-2 select-none pointer-events-none">
-        <motion.div
-          className="flex flex-wrap justify-center items-center gap-0.5 font-bold tracking-wider text-sm"
-          variants={wordVariants}
-          initial="hidden"
-          animate="visible"
+      {/* 主要內容區 */}
+      <div className="relative z-20 flex flex-col items-center justify-center space-y-12 select-none pointer-events-none">
+        
+        {/* 亂碼標題區 */}
+        <div className="text-center px-4">
+          <motion.div 
+            className="text-3xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-purple-600 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <ScrambleText text="CODECAT" delay={100} className="tracking-[0.5em] md:tracking-[0.8em]" />
+          </motion.div>
+          <motion.div 
+            className="text-xs md:text-sm text-gray-400 tracking-[0.2em] font-mono flex flex-col md:flex-row items-center justify-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <span>PYTHON PROGRAMMING</span>
+            <ScrambleText text="%-$*?-.\`<~{#+/;" className="text-gray-300" delay={400} />
+          </motion.div>
+        </div>
+
+        {/* 進度條與狀態 */}
+        <motion.div 
+          className="w-64 md:w-80 flex flex-col items-center gap-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
-          {text.split("").map((char, index) => (
-            <motion.span
-              key={index}
-              variants={letterVariants}
-              className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-gray-700 to-gray-500 font-bold"
-            >
-              <motion.span
-                className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-purple-600 to-orange-500"
-                custom={index}
-                variants={floatVariants}
-                animate="animate"
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            </motion.span>
-          ))}
+          <div className="text-purple-600 font-bold font-mono text-xl">
+            <ProgressCounter /> <span className="text-xs text-purple-400 ml-1">%</span>
+          </div>
+          
+          <div className="w-full h-1 bg-purple-100 rounded-full overflow-hidden relative">
+            <motion.div 
+              className="absolute left-0 top-0 h-full bg-gradient-to-r from-orange-400 to-purple-500 rounded-full"
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            />
+          </div>
+          
+          <div className="text-[10px] text-gray-400 tracking-widest mt-1 uppercase text-center w-full">
+            <ScrambleText text={text.toUpperCase()} delay={600} />
+          </div>
         </motion.div>
+
       </div>
     </div>
   );

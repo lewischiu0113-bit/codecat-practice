@@ -158,7 +158,7 @@ const TextParticles = ({ text = "CodeCat", onComplete, duration = 3000 }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 z-50 bg-white overflow-hidden pointer-events-auto"
+      className="absolute inset-0 z-50 bg-transparent overflow-hidden pointer-events-auto"
     >
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
     </motion.div>

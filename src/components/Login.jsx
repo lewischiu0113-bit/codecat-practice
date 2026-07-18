@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { LogIn, User, Lock, Loader2 } from "lucide-react";
 import { loginUser } from "../utils/auth";
 import BlobBackground from "./BlobBackground";
+import CodeRainBackground from "./CodeRainBackground";
 import TextParticles from "./TextParticles";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -48,8 +49,9 @@ const Login = () => {
             key="splash"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
+            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none bg-white"
           >
+            <CodeRainBackground opacityClass="opacity-30" />
             <TextParticles 
               text="CodeCat" 
               duration={2500} 
