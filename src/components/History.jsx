@@ -190,16 +190,16 @@ const History = () => {
         ) : (
           <motion.div
             key="content"
-            className="p-8 relative z-10"
+            className="p-4 sm:p-6 md:p-8 relative z-10"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-      <motion.div className="mb-8" variants={headerVariants}>
-        <div className="flex items-center justify-between mb-2">
+      <motion.div className="mb-6 sm:mb-8" variants={headerVariants}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
           <div>
             <motion.h1
-              className="text-3xl font-bold text-gray-800 mb-2"
+              className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -207,7 +207,7 @@ const History = () => {
               考試歷史
             </motion.h1>
             <motion.p
-              className="text-gray-600"
+              className="text-gray-600 text-sm sm:text-base"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -220,7 +220,7 @@ const History = () => {
               <motion.button
                 onClick={handleClearHistoryClick}
                 disabled={isDeleting}
-                className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm self-start sm:self-auto"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
@@ -253,7 +253,7 @@ const History = () => {
         {history.length === 0 ? (
           <motion.div
             key="empty"
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center"
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 sm:p-12 text-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -265,8 +265,8 @@ const History = () => {
             >
               <Clock className="mx-auto text-gray-400 mb-4" size={48} />
             </motion.div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">尚無考試記錄</h3>
-            <p className="text-gray-600 mb-6">完成您的第一個考試後，記錄將顯示在這裡</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">尚無考試記錄</h3>
+            <p className="text-gray-600 text-sm sm:text-base mb-6">完成您的第一個考試後，記錄將顯示在這裡</p>
           </motion.div>
         ) : (
           <motion.div
@@ -289,12 +289,12 @@ const History = () => {
               >
                 <Link
                   to={`/exam/${record.examId}`}
-                  className="block bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-colors duration-300"
+                  className="block bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-colors duration-300"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                       <motion.div
-                        className="p-3 bg-orange-100 rounded-lg"
+                        className="p-2.5 sm:p-3 bg-orange-100 rounded-lg flex-shrink-0"
                         whileHover={{ scale: 1.1, rotate: [0, -10, 10, 0] }}
                         transition={{ duration: 0.3 }}
                       >
@@ -302,12 +302,12 @@ const History = () => {
                           animate={{ rotate: [0, 5, -5, 0] }}
                           transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
                         >
-                          <BookOpen className="text-primary" size={24} />
+                          <BookOpen className="text-primary" size={20} />
                         </motion.div>
                       </motion.div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800">{record.examTitle}</h3>
-                        <p className="text-sm text-gray-600">{record.date}</p>
+                      <div className="min-w-0">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800 truncate">{record.examTitle}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600">{record.date}</p>
                         {record.difficulty && (
                           <motion.span
                             className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-700"
@@ -319,16 +319,16 @@ const History = () => {
                       </div>
                     </div>
                     <motion.div
-                      className="text-right"
+                      className="text-right flex-shrink-0"
                       whileHover={{ scale: 1.1 }}
                     >
-                      <p className={`text-2xl font-bold ${
+                      <p className={`text-xl sm:text-2xl font-bold ${
                         record.score >= 80 ? 'text-green-600' :
                         record.score >= 60 ? 'text-yellow-600' : 'text-red-600'
                       }`}>
                         {record.score}%
                       </p>
-                      <p className="text-sm text-gray-600">{record.correct}/{record.total}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">{record.correct}/{record.total}</p>
                     </motion.div>
                   </div>
                 </Link>
@@ -342,14 +342,14 @@ const History = () => {
       <AnimatePresence>
         {showPasswordModal && (
           <motion.div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleCloseModal}
           >
             <motion.div
-              className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4"
+              className="bg-white rounded-xl shadow-xl p-5 sm:p-6 w-[92vw] max-w-md mx-auto"
               variants={modalVariants}
               initial="hidden"
               animate="visible"

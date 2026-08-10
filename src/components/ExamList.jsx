@@ -94,14 +94,14 @@ const ExamList = () => {
         ) : (
           <motion.div
             key="content"
-            className="p-8 relative z-10"
+            className="p-4 sm:p-6 md:p-8 relative z-10"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-      <motion.div className="mb-8" variants={headerVariants}>
+      <motion.div className="mb-6 sm:mb-8" variants={headerVariants}>
         <motion.h1
-          className="text-3xl font-bold text-gray-800 mb-2"
+          className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -109,7 +109,7 @@ const ExamList = () => {
           考試列表
         </motion.h1>
         <motion.p
-          className="text-gray-600"
+          className="text-gray-600 text-sm sm:text-base"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -120,7 +120,7 @@ const ExamList = () => {
 
       {exams.length === 0 ? (
         <motion.div
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center"
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 sm:p-12 text-center"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
@@ -131,15 +131,15 @@ const ExamList = () => {
           >
             <BookOpen className="mx-auto text-gray-400 mb-4" size={48} />
           </motion.div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">尚無可用考試</h3>
-          <p className="text-gray-600">請先初始化資料庫</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">尚無可用考試</h3>
+          <p className="text-gray-600 text-sm sm:text-base">請先初始化資料庫</p>
         </motion.div>
       ) : (
         <motion.div className="space-y-4" variants={containerVariants}>
           {exams.map((exam, index) => (
             <motion.div
               key={exam.id}
-              className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6"
+              className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-5 sm:p-6"
               variants={cardVariants}
               whileHover={{
                 scale: 1.02,
@@ -148,18 +148,18 @@ const ExamList = () => {
                 transition: { duration: 0.3 },
               }}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                     <motion.div
                       animate={{ rotate: [0, 10, -10, 0] }}
                       transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
                     >
-                      <BookOpen size={20} className="text-primary" />
+                      <BookOpen size={20} className="text-primary flex-shrink-0" />
                     </motion.div>
-                    <h2 className="text-xl font-semibold text-gray-800">{exam.title}</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 break-words">{exam.title}</h2>
                     <motion.span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
+                      className={`px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${getDifficultyColor(
                         exam.difficulty
                       )}`}
                       whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
@@ -168,8 +168,8 @@ const ExamList = () => {
                       {exam.difficulty}
                     </motion.span>
                   </div>
-                  <p className="text-gray-600 mb-4">{exam.description}</p>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4 break-words">{exam.description}</p>
+                  <div className="flex items-center gap-4 text-xs sm:text-sm text-gray-500">
                     <motion.div
                       className="flex items-center gap-1"
                       whileHover={{ scale: 1.1 }}
@@ -184,10 +184,10 @@ const ExamList = () => {
                     </motion.div>
                   </div>
                 </div>
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                   <Link
                     to={`/exam/${exam.id}`}
-                    className="ml-4 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-orange-600 transition-colors duration-300 shadow-lg flex items-center gap-2"
+                    className="w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-orange-600 transition-colors duration-300 shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     <motion.div
                       animate={{ x: [0, 5, 0] }}

@@ -144,14 +144,14 @@ const Dashboard = () => {
         ) : (
           <motion.div
             key="content"
-            className="p-8 relative z-10"
+            className="p-4 sm:p-6 md:p-8 relative z-10"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-        <motion.div className="mb-8" variants={itemVariants}>
+        <motion.div className="mb-6 sm:mb-8" variants={itemVariants}>
           <motion.h1
-            className="text-3xl font-bold text-gray-800 mb-2"
+            className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -159,7 +159,7 @@ const Dashboard = () => {
             首頁
           </motion.h1>
           <motion.p
-            className="text-gray-600"
+            className="text-gray-600 text-sm sm:text-base"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -169,7 +169,7 @@ const Dashboard = () => {
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8"
           variants={containerVariants}
         >
           {stats.map((stat, index) => {
@@ -177,11 +177,11 @@ const Dashboard = () => {
             return (
               <motion.div
                 key={index}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 cursor-pointer"
                 variants={cardVariants}
                 whileHover="hover"
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <motion.div
                     className={`p-3 rounded-lg ${stat.bgColor}`}
                     variants={iconVariants}
@@ -212,12 +212,12 @@ const Dashboard = () => {
         </motion.div>
 
         <motion.div
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6"
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 mb-6"
           variants={itemVariants}
           whileHover={{ scale: 1.01, boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }}
         >
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">快速開始</h2>
-          <p className="text-gray-600 mb-4">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">快速開始</h2>
+          <p className="text-gray-600 text-sm sm:text-base mb-4">
             選擇一個考試開始練習 Python
             程式設計。每個考試都包含多種題型，幫助您掌握不同的 Python 技巧。
           </p>
@@ -225,7 +225,7 @@ const Dashboard = () => {
           <motion.div whileHover={{ x: [-8, 8, -8, 8, 0] }}>
             <Link
               to="/exams"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-orange-600 transition-colors duration-300 shadow-lg"
+              className="inline-flex items-center justify-center w-full sm:w-auto gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-orange-600 transition-colors duration-300 shadow-lg text-sm sm:text-base"
             >
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
@@ -239,10 +239,10 @@ const Dashboard = () => {
         </motion.div>
 
         <motion.div
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6"
           variants={itemVariants}
         >
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">最近考試</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">最近考試</h2>
           {recentRecords.length === 0 ? (
             <motion.p
               className="text-gray-500 text-sm"
@@ -265,15 +265,15 @@ const Dashboard = () => {
                     to={`/exam/${record.examId}`}
                     className="block p-4 rounded-lg border border-gray-200 hover:bg-gray-50 hover:shadow-md transition-colors duration-300"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                       <div>
-                        <h3 className="font-semibold text-gray-800">
+                        <h3 className="font-semibold text-gray-800 text-sm sm:text-base">
                           {record.examTitle}
                         </h3>
-                        <p className="text-sm text-gray-600">{record.date}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">{record.date}</p>
                       </div>
                       <motion.div
-                        className="text-right"
+                        className="text-right flex-shrink-0"
                         whileHover={{ scale: 1.1 }}
                       >
                         <p

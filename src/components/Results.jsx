@@ -102,41 +102,41 @@ const Results = () => {
         ) : (
           <motion.div
             key="content"
-            className="p-8 animate-fade-in"
+            className="p-4 sm:p-6 md:p-8 animate-fade-in"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
       <button
         onClick={() => navigate("/exams")}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left"
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4 sm:mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left text-sm sm:text-base"
       >
         <ArrowLeft size={20} className="transition-transform duration-300 hover:-translate-x-1" />
         <span>返回考試列表</span>
       </button>
 
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <div
-          className={`inline-flex items-center gap-2 px-6 py-4 rounded-xl ${getScoreBgColor()} mb-4 animate-bounce-in`}
+          className={`inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl ${getScoreBgColor()} mb-4 animate-bounce-in max-w-full`}
         >
-          <Trophy className={`${getScoreColor()} animate-pulse`} size={28} />
+          <Trophy className={`${getScoreColor()} animate-pulse flex-shrink-0`} size={28} />
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">考試結果</h1>
-            <p className="text-sm text-gray-600">{exam.title}</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800">考試結果</h1>
+            <p className="text-xs sm:text-sm text-gray-600 break-words">{exam.title}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 animate-scale-in">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 mb-6 animate-scale-in">
+          <div className="flex items-center justify-between gap-4">
             <div className="animate-slide-in-left">
-              <p className="text-gray-600 mb-1">得分</p>
-              <p className={`text-4xl font-bold ${getScoreColor()} animate-number-count`}>
+              <p className="text-gray-600 text-xs sm:text-sm mb-1">得分</p>
+              <p className={`text-2xl sm:text-4xl font-bold ${getScoreColor()} animate-number-count`}>
                 {score.correct} / {score.total}
               </p>
             </div>
             <div className="text-right animate-slide-in-right">
-              <p className="text-gray-600 mb-1">正確率</p>
-              <p className={`text-4xl font-bold ${getScoreColor()} animate-number-count`}>
+              <p className="text-gray-600 text-xs sm:text-sm mb-1">正確率</p>
+              <p className={`text-2xl sm:text-4xl font-bold ${getScoreColor()} animate-number-count`}>
                 {score.percentage}%
               </p>
             </div>
@@ -145,20 +145,20 @@ const Results = () => {
       </div>
 
       <div className="mb-6 animate-slide-in-up animate-delay-300">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">答案詳解</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">答案詳解</h2>
         <QuestionResultsList exam={exam} answers={answers} />
       </div>
 
-      <div className="flex justify-end gap-4 animate-slide-in-up animate-delay-500">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 animate-slide-in-up animate-delay-500">
         <button
           onClick={() => navigate(`/exam/${id}`)}
-          className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-300 transform hover:scale-105 hover:shadow-md active:scale-95"
+          className="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-300 transform hover:scale-105 hover:shadow-md active:scale-95 text-sm sm:text-base text-center"
         >
           重新考試
         </button>
         <button
           onClick={() => navigate("/exams")}
-          className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-orange-600 transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95"
+          className="w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-orange-600 transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 text-sm sm:text-base text-center"
         >
           返回列表
         </button>

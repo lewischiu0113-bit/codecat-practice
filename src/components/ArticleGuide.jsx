@@ -38,7 +38,7 @@ const GuideCodeBlock = ({ children, language = 'python' }) => {
   };
 
   return (
-    <div className="relative group my-3">
+    <div className="relative group my-3 overflow-x-auto max-w-full">
       <button
         onClick={handleCopy}
         className="absolute right-3 top-3 p-1.5 rounded-lg bg-gray-800/80 text-gray-400 hover:text-white border border-gray-700/50 hover:bg-gray-700/80 transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 z-10"
@@ -54,7 +54,7 @@ const GuideCodeBlock = ({ children, language = 'python' }) => {
         style={oneDark}
         language={language}
         PreTag="div"
-        className="rounded-xl border border-gray-800 shadow-sm"
+        className="rounded-xl border border-gray-800 shadow-sm text-xs sm:text-sm"
         customStyle={{
           margin: 0,
           borderRadius: '0.75rem',
@@ -69,22 +69,22 @@ const GuideCodeBlock = ({ children, language = 'python' }) => {
 
 const ArticleGuide = () => {
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 text-gray-800">
-      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6">
-        <h1 className="text-2xl font-bold mb-2 text-gray-800">Python 重點整理</h1>
-        <p className="text-gray-600">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6 sm:space-y-8 text-gray-800">
+      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-4 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2 text-gray-800">Python 重點整理</h1>
+        <p className="text-gray-600 text-sm sm:text-base">
           考題重點整理，可透過目錄快速跳轉章節。
         </p>
       </div>
 
-      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">目錄快速導覽</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-white/30 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-800">目錄快速導覽</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
           {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="text-gray-700 hover:text-primary bg-white/40 hover:bg-orange-50/50 border border-gray-200/50 px-3 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow hover:-translate-y-0.5"
+              className="text-gray-700 hover:text-primary bg-white/40 hover:bg-orange-50/50 border border-gray-200/50 px-3 py-2 rounded-lg text-xs sm:text-sm transition-all duration-200 shadow-sm hover:shadow hover:-translate-y-0.5"
             >
               # {section.title}
             </a>

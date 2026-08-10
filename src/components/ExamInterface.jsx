@@ -138,35 +138,35 @@ const ExamInterface = () => {
         ) : (
           <motion.div
             key="content"
-            className="p-8 animate-fade-in"
+            className="p-4 sm:p-6 md:p-8 animate-fade-in"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
       <button
         onClick={() => navigate('/exams')}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left"
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4 sm:mb-6 transition-all duration-300 transform hover:scale-105 animate-slide-in-left text-sm sm:text-base"
       >
         <ArrowLeft size={20} className="transition-transform duration-300 hover:-translate-x-1" />
         <span>返回考試列表</span>
       </button>
 
       <div className="mb-6 animate-slide-in-down">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold text-gray-800">{exam.title}</h1>
-          <div className="flex items-center gap-2 px-4 py-2 bg-orange-50 border-2 border-orange-200 rounded-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 break-words">{exam.title}</h1>
+          <div className="inline-flex items-center justify-between sm:justify-start gap-2 px-4 py-2 bg-orange-50 border-2 border-orange-200 rounded-lg self-start sm:self-auto">
             <Clock 
               size={20} 
               className={`text-orange-600 ${timeRemaining <= 60 ? 'animate-pulse' : ''}`} 
             />
-            <span className={`text-lg font-bold ${
+            <span className={`text-base sm:text-lg font-bold ${
               timeRemaining <= 60 ? 'text-red-600' : 'text-orange-600'
             }`}>
               {formatTime(timeRemaining)}
             </span>
           </div>
         </div>
-        <p className="text-gray-600">共 {exam.questions.length} 題（每題 1 分鐘，共 {exam.questions.length} 分鐘）</p>
+        <p className="text-gray-600 text-sm sm:text-base">共 {exam.questions.length} 題（每題 1 分鐘，共 {exam.questions.length} 分鐘）</p>
       </div>
 
       <div className="space-y-4">
@@ -187,13 +187,13 @@ const ExamInterface = () => {
         ))}
       </div>
 
-      <div className="mt-8 flex justify-end animate-slide-in-up animate-delay-500">
+      <div className="mt-8 flex justify-center sm:justify-end animate-slide-in-up animate-delay-500">
         <button
           onClick={handleSubmit}
           disabled={!allAnswered || isSubmitted}
-          className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 transform ${
+          className={`w-full sm:w-auto px-8 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 transform ${
             allAnswered && !isSubmitted
-              ? 'bg-primary text-white hover:bg-orange-600 hover:scale-110 hover:shadow-lg active:scale-95'
+              ? 'bg-primary text-white hover:bg-orange-600 hover:scale-105 sm:hover:scale-110 hover:shadow-lg active:scale-95'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >

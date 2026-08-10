@@ -115,7 +115,7 @@ const Register = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md relative z-10 border border-orange-100"
+            className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md relative z-10 border border-orange-100"
           >
             {/* 標題區域 - 漸進出現動畫 */}
             <div className="text-center mb-8">

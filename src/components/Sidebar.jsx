@@ -1,16 +1,17 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, BookOpen, History, ScrollText, LogOut } from "lucide-react";
+import { LayoutDashboard, BookOpen, History, ScrollText, LogOut, X } from "lucide-react";
 import { clsx } from "clsx";
 import { useAuth } from "../contexts/AuthContext";
 import SidebarBackground from "./SidebarBackground";
 
-const Sidebar = () => {
+const Sidebar = ({ isMobileOpen, onCloseMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
 
   const handleLogout = () => {
     if (window.confirm("確定要登出嗎？")) {
+      onCloseMobile?.();
       signOut();
       navigate("/login");
     }
@@ -40,59 +41,83 @@ const Sidebar = () => {
   ];
 
   return (
-    // <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 animate-slide-in-left flex flex-col relative overflow-hidden">
-    //   <SidebarBackground />
-    //   <div className="p-6 flex-1 flex flex-col relative z-10">
+    <>
+      {/* 行動裝置背景遮罩 (Backdrop) */}
+      {isMobileOpen && (
+        <div
+          onClick={onCloseMobile}
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm animate-fade-in"
+        />
+      )}
 
-    <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 animate-slide-in-left flex flex-col">
-      <SidebarBackground />
-      <div className="p-6 flex-1 flex flex-col">
-        <h1 className="text-2xl font-bold text-gray-800 mb-8 animate-fade-in">
-          CodeCat
-          <span className="text-primary"> Practice</span>
-        </h1>
-        <nav className="space-y-2 flex-1">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={clsx(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-md",
-                  isActive
-                    ? "bg-orange-50 text-primary font-medium shadow-sm scale-105"
-                    : "text-gray-600 hover:bg-gray-50"
-                )}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <Icon
-                  size={20}
+      {/* 側邊欄本體 */}
+      <div
+        className={clsx(
+          "fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 flex flex-col z-50 transition-transform duration-300 ease-in-out md:translate-x-0",
+          isMobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"
+        )}
+      >
+        <SidebarBackground />
+        <div className="p-6 flex-1 flex flex-col relative z-10">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-2xl font-bold text-gray-800 animate-fade-in">
+              CodeCat
+              <span className="text-primary"> Practice</span>
+            </h1>
+            {/* 行動端關閉按鈕 */}
+            <button
+              onClick={onCloseMobile}
+              className="p-1 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 md:hidden transition-colors"
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          <nav className="space-y-2 flex-1">
+            {menuItems.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={onCloseMobile}
                   className={clsx(
-                    "transition-transform duration-300",
-                    isActive ? "scale-110" : "group-hover:scale-110"
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-md",
+                    isActive
+                      ? "bg-orange-50 text-primary font-medium shadow-sm scale-105"
+                      : "text-gray-600 hover:bg-gray-50"
                   )}
-                />
-                <span className="transition-all duration-300">
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <Icon
+                    size={20}
+                    className={clsx(
+                      "transition-transform duration-300",
+                      isActive ? "scale-110" : "group-hover:scale-110"
+                    )}
+                  />
+                  <span className="transition-all duration-300">
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="pt-6 border-t border-gray-200">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-300 transform hover:scale-105"
-          >
-            <LogOut size={20} />
-            <span>登出</span>
-          </button>
+          <div className="pt-6 border-t border-gray-200">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-300 transform hover:scale-105"
+            >
+              <LogOut size={20} />
+              <span>登出</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.47.10",
+    "@supabase/supabase-js": "2.47.10",
     "@types/react-syntax-highlighter": "^15.5.13",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.26",
@@ -37,11 +37,6 @@
     "globals": "^16.5.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "vite": "npm:rolldown-vite@7.2.5"
-  },
-  "pnpm": {
-    "overrides": {
-      "vite": "npm:rolldown-vite@7.2.5"
-    }
+    "vite": "^5.4.14"
   }
 }
